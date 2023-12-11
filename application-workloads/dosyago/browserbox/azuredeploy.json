@@ -93,13 +93,6 @@
         "description": "Acknowledgement of reading the guide and setting up DNS and firewall ports."
       }
     },
-    "virtualMachineSize": {
-      "type": "string",
-      "defaultValue": "Standard_D2s_v3",
-      "metadata": {
-        "description": "This is the Azure Virtual Machine size, and will affect the cost. If you don't know, just leave the default value."
-      }
-    },
     "imageChoice": {
       "type": "string",
       "allowedValues": [
@@ -112,6 +105,13 @@
         "description": "Choose an OS image"
       },
       "defaultValue": "Ubuntu2204"
+    },
+    "virtualMachineSize": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v3",
+      "metadata": {
+        "description": "This is the Azure Virtual Machine size, and will affect the cost. If you don't know, just leave the default value."
+      }
     }
   },
   "variables": {

@@ -19,6 +19,26 @@ get_distro() {
   fi
 }
 
+# Function to add a user non-interactively
+add_user() {
+  local username=$1
+  local distro=$(get_distro)
+
+  case $distro in
+    debian|ubuntu|linuxmint|pop|elementary|kali|mx|mxlinux|zorinos)
+      adduser --gecos "" --disabled-password "$username"
+      ;;
+    centos|fedora|rhel|redhatenterpriseserver|almalinux|rocky|ol|oraclelinux|scientific|amzn)
+      adduser "$username"
+      passwd -d "$username"
+      ;;
+    *)
+      echo "Unsupported distribution: $distro" >&2
+      return 1
+      ;;
+  esac
+}
+
 # Check if essential fields are present
 if [ -z "$HOSTNAME" ] || [ -z "$USEREMAIL" ]; then
   echo "Both 'HOSTNAME' and 'USEREMAIL' are required to proceed." >&2
