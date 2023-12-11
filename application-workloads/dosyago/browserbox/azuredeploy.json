@@ -34,6 +34,7 @@
     },
     "dnsNameForPublicIP": {
       "type": "string",
+      "defaultValue": "[variables('dnsName')]",
       "metadata": {
         "description": "The DNS name label for the Public IP. Must be globally unique."
       }
@@ -148,6 +149,7 @@
     "publicIPAddressName": "[concat(variables('publicIPAddressNamePrefix'), '-', variables('uniqueSuffix'))]",
     "virtualNetworkName": "[concat(variables('virtualNetworkNamePrefix'), '-', variables('uniqueSuffix'))]",
     "vmName": "[concat(variables('vmNamePrefix'), '-', variables('uniqueSuffix'))]",
+    "dnsName": "[concat('bb', variables('uniqueSuffix'))]",
     "networkSecurityGroupName": "BrowserBoxNSG",
     "subnetName": "BrowserBoxSubnet",
     "nicName": "BrowserBoxNIC",
