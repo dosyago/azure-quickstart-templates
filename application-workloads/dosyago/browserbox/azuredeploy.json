@@ -34,8 +34,9 @@
     },
     "dnsNameForPublicIP": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "The DNS name label for the Public IP. Must be globally unique. Enter 'uniq' to be assigned a unique value."
+        "description": "The DNS name label for the Public IP. Must be globally unique. Leave blank to be assigned a unique value."
       }
     },
     "location": {
@@ -237,7 +238,7 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[if(equals(parameters('dnsNameForPublicIP'), 'uniq'), variables('dnsName'), parameters('dnsNameForPublicIP'))]"
+          "domainNameLabel": "[if(equals(parameters('dnsNameForPublicIP'), ''), variables('dnsName'), parameters('dnsNameForPublicIP'))]"
         }
       }
     },
