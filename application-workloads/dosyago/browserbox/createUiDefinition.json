@@ -5,7 +5,7 @@
   "parameters": {
     "config": {
       "basics": {
-        "description": "This template sets up a BrowserBox service for instant Remote Browsing from Azure!"
+        "description": "This template sets up a BrowserBox service for instant Remote Browsing from Azure!",
         "location": {
           "label": "Location",
           "resourceTypes": [ "NewRelic.Observability/monitors" ]
