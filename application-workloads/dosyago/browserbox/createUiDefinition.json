@@ -74,8 +74,10 @@
     ],
     "steps": [],
     "outputs": {
-      "virtualMachineSize": "[basics('virtualMachineSize')]",
-      "emailAddress": "[basics('emailAddress')]"
+      "parameters": {
+        "virtualMachineSize": "[basics('virtualMachineSize')]",
+        "emailAddress": "[basics('emailAddress')]"
+      }
     }
   }
 }
