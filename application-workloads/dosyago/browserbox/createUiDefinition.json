@@ -4,15 +4,41 @@
   "version": "0.1.2-preview",
   "parameters": {
     "config": {
+      "isWizard": false,
       "basics": {
-        "description": "This template sets up a BrowserBox service for instant Remote Browsing from Azure!",
+        "description": "This template sets up a [BrowserBox](https://github.com/BrowserBox/BrowserBox) service for instant Remote Browsing from Azure. Want more? [Licenses available on our website](https://dosyago.com)",
+        "subscription": {
+          "constraints": {
+            "validations": [
+              {
+                "isValid": "[not(contains(subscription().displayName, 'Test'))]",
+                "message": "Can't use test subscription."
+              },
+              {
+                "permission": "Microsoft.Compute/virtualMachines/write",
+                "message": "Must have write permission for the virtual machine."
+              },
+              {
+                "permission": "Microsoft.Compute/virtualMachines/extensions/write",
+                "message": "Must have write permission for the extension."
+              }
+            ]
+          },
+          "resourceProviders": [
+            "Microsoft.Compute"
+          ]
+        },
         "location": {
-          "label": "Location",
-          "resourceTypes": [ "NewRelic.Observability/monitors" ]
+          "label": "Pick your nearest location",
+          "toolTip": "The closer your location is to you, the lower your ping and round-trip time and the better your remote browsing with BrowserBox experience!",
+          "resourceTypes": [
+            "Microsoft.Compute/virtualMachines"
+          ],
+          "visible": true
         }
       }
     },
-    "resourceTypes": [ "NewRelic.Observability/monitors" ],
+    "resourceTypes": [ "Microsoft.Computer/virtualMachines" ],
     "basics": [
       {
         "name": "virtualMachineSize",
@@ -53,3 +79,4 @@
     }
   }
 }
+

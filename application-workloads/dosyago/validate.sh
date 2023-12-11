@@ -12,8 +12,12 @@ if ! brew --prefix coreutils &>/dev/null; then
   brew install coreutils
 fi
 
-if ! jq < ./browserbox/azuredeploy.json; then
-  echo "Error during JSON parse. Exiting..."
+if ! jq < ./browserbox/createUiDefinition.json &>/dev/null; then
+  echo "Error during JSON parse of createUiDefinition. Exiting..."
+  exit 1
+fi
+if ! jq < ./browserbox/azuredeploy.json &>/dev/null; then
+  echo "Error during JSON parse of azuredeploy.json. Exiting..."
   exit 1
 fi
 
