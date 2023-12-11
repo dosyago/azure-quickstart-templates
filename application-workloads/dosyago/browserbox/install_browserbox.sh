@@ -1,5 +1,6 @@
 #!/bin/bash
-set -xeo pipefail
+#set -xeo pipefail
+set -x
 
 # Parameters passed from ARM template
 USEREMAIL=$1
@@ -56,7 +57,7 @@ case $distro in
   centos|fedora|rhel|redhatenterpriseserver|almalinux|rocky|ol|oraclelinux|scientific|amzn)
     # the following line (exclude) is necessary at least on CentOS because otherwise
     # the WA agent has an error when the script it is running tries to update the WA agent. :)
-    yum update -y --exclude=WALinuxAgent
+    yum update -y --exclude=WALinuxAgent,WALinuxAgent-udev --skip-broken
     yum install -y git
     ;;
   *)
