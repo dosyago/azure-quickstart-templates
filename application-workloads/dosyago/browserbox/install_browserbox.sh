@@ -54,7 +54,9 @@ case $distro in
     apt-get install -y git
     ;;
   centos|fedora|rhel|redhatenterpriseserver|almalinux|rocky|ol|oraclelinux|scientific|amzn)
-    yum update -y
+    # the following line (exclude) is necessary at least on CentOS because otherwise
+    # the WA agent has an error when the script it is running tries to update the WA agent. :)
+    yum update -y --exclude=WALinuxAgent
     yum install -y git
     ;;
   *)
