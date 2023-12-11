@@ -29,7 +29,13 @@ param location string = resourceGroup().location
 param authenticationType string = 'sshPublicKey'
 
 @description('The Linux distribution for the VM. Can be UbuntuServer22.04LTS, Debian11, or RHEL8.7LVM.')
-param linuxDistro string = 'UbuntuServer22.04LTS'
+@allowed([
+  '22_04-lts-gen2'
+  '8-lvm-gen2'
+  '11-backports-gen2'
+  '8_5-gen2'
+])
+param linuxDistro string = '22_04-lts-gen2'
 
 @description('The email address of the user.')
 param userEmail string

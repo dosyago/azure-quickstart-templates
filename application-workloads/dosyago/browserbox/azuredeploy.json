@@ -61,7 +61,13 @@
     },
     "linuxDistro": {
       "type": "string",
-      "defaultValue": "UbuntuServer22.04LTS",
+      "defaultValue": "22_04-lts-gen2",
+      "allowedValues": [
+        "22_04-lts-gen2",
+        "8-lvm-gen2",
+        "11-backports-gen2",
+        "8_5-gen2"
+      ],
       "metadata": {
         "description": "The Linux distribution for the VM. Can be UbuntuServer22.04LTS, Debian11, or RHEL8.7LVM."
       }
