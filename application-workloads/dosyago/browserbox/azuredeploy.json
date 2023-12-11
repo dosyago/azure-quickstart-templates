@@ -34,9 +34,8 @@
     },
     "dnsNameForPublicIP": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
-        "description": "The DNS name label for the Public IP. Must be globally unique. Leave blank for a unique value."
+        "description": "The DNS name label for the Public IP. Must be globally unique. Enter 'uniq' to be assigned a unique value."
       }
     },
     "location": {
@@ -146,13 +145,16 @@
     "publicIPAddressNamePrefix": "BrowserBoxPublicIP",
     "virtualNetworkNamePrefix": "BrowserBoxVNet",
     "vmNamePrefix": "BrowserBoxVM",
+    "networkSecurityGroupNamePrefix": "BrowserBoxNSG",
+    "subnetNamePrefix": "BrowserBoxSubnet",
+    "nicNamePrefix": "BrowserBoxNIC",
+    "networkSecurityGroupName": "[concat(variables('networkSecurityGroupNamePrefix'), '-', variables('uniqueSuffix'))]",
+    "subnetName": "[concat(variables('subnetNamePrefix'), '-', variables('uniqueSuffix'))]",
+    "nicName": "[concat(variables('nicNamePrefix'), '-', variables('uniqueSuffix'))]",
     "publicIPAddressName": "[concat(variables('publicIPAddressNamePrefix'), '-', variables('uniqueSuffix'))]",
     "virtualNetworkName": "[concat(variables('virtualNetworkNamePrefix'), '-', variables('uniqueSuffix'))]",
     "vmName": "[concat(variables('vmNamePrefix'), '-', variables('uniqueSuffix'))]",
     "dnsName": "[concat('bb', variables('uniqueSuffix'))]",
-    "networkSecurityGroupName": "BrowserBoxNSG",
-    "subnetName": "BrowserBoxSubnet",
-    "nicName": "BrowserBoxNIC",
     "addressPrefix": "10.0.0.0/16",
     "subnetPrefix": "10.0.0.0/24",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
@@ -240,7 +242,7 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[if(equals(parameters('dnsNameForPublicIP'), ''), variables('dnsName'), parameters('dnsNameForPublicIP'))]"
+          "domainNameLabel": "[if(equals(parameters('dnsNameForPublicIP'), 'uniq'), variables('dnsName'), parameters('dnsNameForPublicIP'))]"
         }
       }
     },
