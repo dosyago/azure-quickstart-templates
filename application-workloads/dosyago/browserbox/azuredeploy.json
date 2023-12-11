@@ -53,8 +53,9 @@
     },
     "hostname": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "The fully-qualified domain name for the VM."
+        "description": "The fully-qualified custom domain name for your BrowserBox instance. Specify if you will add an A record for this custom domain with your DNS provider pointing to this VM's public IP address. Otherwise, leave blank to get a random cloudapp.azure.com hostname that sets up automatically."
       }
     },
     "token": {
@@ -150,7 +151,8 @@
     "dnsName": "[concat('bb', variables('uniqueSuffix'))]",
     "addressPrefix": "10.0.0.0/16",
     "subnetPrefix": "10.0.0.0/24",
-    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]"
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
+    "actualHostname": "[concat(variables('dnsName'), '.', parameters('location'), '.', 'cloudapp.azure.com')]"
   },
   "resources": [
     {
@@ -328,7 +330,7 @@
           "fileUris": ["[uri(parameters('_artifactsLocation'), concat('install_browserbox.sh', parameters('_artifactsLocationSasToken')))]"]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('bash install_browserbox.sh ', parameters('userEmail'), ' ', parameters('hostname'), ' ', parameters('token'), ' ', parameters('installDocViewer'), ' ', parameters('understanding'))]"
+          "commandToExecute": "[concat('bash install_browserbox.sh ', parameters('userEmail'), ' ', variables('actualHostname'), ' ', parameters('token'), ' ', parameters('installDocViewer'), ' ', parameters('understanding'))]"
         }
       }
     }
