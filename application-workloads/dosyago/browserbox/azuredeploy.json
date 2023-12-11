@@ -2,6 +2,10 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "utcValue": {
+      "type": "string",
+      "defaultValue": "[utcNow()]"
+    },
     "_artifactsLocation": {
       "type": "string",
       "metadata": {
@@ -142,8 +146,7 @@
     "virtualNetworkName": "BrowserBoxVNet",
     "subnetName": "BrowserBoxSubnet",
     "nicName": "BrowserBoxNIC",
-    "timestamp": "[format('{0:yyyyMMddHHmmss}', utcNow())]",
-    "uniqueSuffix": "[uniqueString(resourceGroup().id, deployment().name, variables('timestamp'))]",
+    "uniqueSuffix": "[uniqueString(resourceGroup().id, deployment().name, parameters('utcValue'))]",
     "vmNamePrefix": "BrowserBoxVM",
     "vmName": "[concat(variables('vmNamePrefix'), '-', variables('uniqueSuffix'))]",
     "addressPrefix": "10.0.0.0/16",
