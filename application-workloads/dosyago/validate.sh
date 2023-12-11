@@ -17,5 +17,5 @@ if ! az bicep decompile --file ./browserbox/azuredeploy.json --force; then
   exit 1
 fi
 
-./az-group-deploy.sh -a browserbox -l eastus
+./az-group-deploy.sh -a browserbox -l eastus -u
 
