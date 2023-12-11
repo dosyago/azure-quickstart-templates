@@ -41,17 +41,6 @@
         "description": "Location for all resources."
       }
     },
-    "authenticationType": {
-      "type": "string",
-      "defaultValue": "sshPublicKey",
-      "allowedValues": [
-        "sshPublicKey",
-        "password"
-      ],
-      "metadata": {
-        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
-      }
-    },
     "userEmail": {
       "type": "string",
       "metadata": {
@@ -66,9 +55,37 @@
     },
     "token": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "A secret for the login link."
+      }
+    },
+    "imageChoice": {
+      "type": "string",
+      "allowedValues": [
+        "CentOS85Gen2",
+        "Debian11",
+        "Ubuntu2204",
+        "RHELRaw8LVMGen2"
+      ],
+      "metadata": {
+        "description": "Choose an OS image"
+      }
+    },
+    "virtualMachineSize": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the Azure Virtual Machine size, and will affect the cost. If you don't know, just leave the default value."
+      }
+    },
+    "authenticationType": {
+      "type": "string",
+      "defaultValue": "sshPublicKey",
+      "allowedValues": [
+        "sshPublicKey",
+        "password"
+      ],
+      "metadata": {
+        "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
       }
     },
     "installDocViewer": {
@@ -93,26 +110,6 @@
         "description": "Acknowledgement of reading the guide and setting up DNS and firewall ports."
       }
     },
-    "imageChoice": {
-      "type": "string",
-      "allowedValues": [
-        "CentOS85Gen2",
-        "Debian11",
-        "Ubuntu2204",
-        "RHELRaw8LVMGen2"
-      ],
-      "metadata": {
-        "description": "Choose an OS image"
-      },
-      "defaultValue": "Ubuntu2204"
-    },
-    "virtualMachineSize": {
-      "type": "string",
-      "defaultValue": "Standard_D2s_v3",
-      "metadata": {
-        "description": "This is the Azure Virtual Machine size, and will affect the cost. If you don't know, just leave the default value."
-      }
-    }
   },
   "variables": {
     "CentOS85Gen2": {
