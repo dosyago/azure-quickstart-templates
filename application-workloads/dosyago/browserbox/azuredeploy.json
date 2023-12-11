@@ -67,9 +67,9 @@
     "imageChoice": {
       "type": "string",
       "allowedValues": [
-        "CentOS85Gen2",
-        "Ubuntu2204",
-        "RHELRaw8LVMGen2"
+        "CentOS 8.5 (gen 2)",
+        "Ubuntu 22.04 LTS (gen 2)",
+        "RedHat 8 LVM (gen 2)"
       ],
       "metadata": {
         "description": "Choose an OS image"
@@ -117,19 +117,19 @@
     }
   },
   "variables": {
-    "CentOS85Gen2": {
+    "CentOS 8.5 (gen 2)": {
       "version": "latest",
       "publisher": "OpenLogic",
       "offer": "CentOS",
       "sku": "8_5-gen2"
     },
-    "Ubuntu2204": {
+    "Ubuntu 22.04 LTS (gen 2)"": {
       "version": "latest",
       "publisher": "Canonical",
       "offer": "0001-com-ubuntu-server-jammy",
       "sku": "22_04-lts-gen2"
     },
-    "RHELRaw8LVMGen2": {
+    "RedHat 8 LVM (gen 2)": {
       "version": "latest",
       "publisher": "RedHat",
       "offer": "RHEL",
