@@ -15,9 +15,6 @@ param adminPasswordOrKey string
 @description('The DNS name label for the Public IP. Must be globally unique.')
 param dnsNameForPublicIP string
 
-@description('The size of the VM to use.')
-param vmSize string = 'Standard_DS1_v2'
-
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
@@ -27,15 +24,6 @@ param location string = resourceGroup().location
   'password'
 ])
 param authenticationType string = 'sshPublicKey'
-
-@description('The Linux distribution for the VM. Can be UbuntuServer22.04LTS, Debian11, or RHEL8.7LVM.')
-@allowed([
-  '22_04-lts-gen2'
-  '8-lvm-gen2'
-  '11-backports-gen2'
-  '8_5-gen2'
-])
-param linuxDistro string = '22_04-lts-gen2'
 
 @description('The email address of the user.')
 param userEmail string
@@ -60,6 +48,9 @@ param installDocViewer string = 'false'
 ])
 param understanding string = 'true'
 
+@description('This is the Azure Virtual Machine size, and will affect the cost. If you don\'t know, just leave the default value.')
+param virtualMachineSize string = 'Standard_D2s_v3'
+
 var networkSecurityGroupName = 'BrowserBoxNSG'
 var publicIPAddressName = 'BrowserBoxPublicIP'
 var virtualNetworkName = 'BrowserBoxVNet'
@@ -69,6 +60,9 @@ var vmName = 'BrowserBoxVM'
 var addressPrefix = '10.0.0.0/16'
 var subnetPrefix = '10.0.0.0/24'
 var subnetRef = resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, subnetName)
+var imageOffer = '0001-com-ubuntu-server-jammy'
+var imagePublisher = 'Canonical'
+var ubuntuOSVersion = '22_04-lts-gen2'
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   name: networkSecurityGroupName
@@ -188,7 +182,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: vmSize
+      vmSize: virtualMachineSize
     }
     osProfile: {
       computerName: vmName
@@ -208,9 +202,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2020-06-01' = {
     }
     storageProfile: {
       imageReference: {
-        publisher: 'Canonical'
-        offer: 'UbuntuServer'
-        sku: linuxDistro
+        publisher: imagePublisher
+        offer: imageOffer
+        sku: ubuntuOSVersion
         version: 'latest'
       }
       osDisk: {
