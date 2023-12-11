@@ -109,7 +109,7 @@
       "metadata": {
         "description": "Acknowledgement of reading the guide and setting up DNS and firewall ports."
       }
-    },
+    }
   },
   "variables": {
     "CentOS85Gen2": {
