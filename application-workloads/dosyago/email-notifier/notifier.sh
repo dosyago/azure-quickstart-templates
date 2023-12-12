@@ -22,6 +22,8 @@ nohup bash -c '
     }" "https://dc.services.visualstudio.com/v2/track" -H "x-api-key: '"$appInsightsKey"'"
   }
 
+  sendMetric
+
   # Wait for 15 seconds
   sleep 15
 
