@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "2.5.0.2",
+  "contentVersion": "2.6.0.2",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -153,6 +153,7 @@
     "publicIPAddressName": "[concat(variables('publicIPAddressNamePrefix'), '-', variables('uniqueSuffix'))]",
     "virtualNetworkName": "[concat(variables('virtualNetworkNamePrefix'), '-', variables('uniqueSuffix'))]",
     "vmName": "[concat(variables('vmNamePrefix'), '-', variables('uniqueSuffix'))]",
+    "scriptName": "[concat(variables('vmName'), '/installBrowserBox', '.', variables('uniqueSuffix')))]",
     "dnsName": "[concat('bb', variables('uniqueSuffix'))]",
     "addressPrefix": "10.0.0.0/16",
     "subnetPrefix": "10.0.0.0/24",
@@ -320,7 +321,7 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmNamePrefix'), '/installBrowserBox', '.', variables('uniqueSuffix'))]",
+      "name": "[variables('scriptName')]",
       "apiVersion": "2023-03-01",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -373,7 +374,7 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(variables('vmNamePrefix'), '/installBrowserBox', '.', variables('uniqueSuffix')))]"
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('scriptName'))]"
       ],
       "properties": {
         "description": "Alert when custom metric is logged",
