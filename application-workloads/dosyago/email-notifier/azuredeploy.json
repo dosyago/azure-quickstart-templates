@@ -351,7 +351,7 @@
         "severity": 3,
         "enabled": true,
         "scopes": [
-          "[resourceId('Microsoft.Insights/components', conacat('yourApplicationInsights', variables('uniqueSuffix')))]"
+          "[resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix')))]"
         ],
         "criteria": {
           "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
@@ -380,7 +380,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Insights/metricAlerts', conacat('yourAlertRule', variables('uniqueSuffix')))]"
+        "[resourceId('Microsoft.Insights/metricAlerts', concat('yourAlertRule', variables('uniqueSuffix')))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
