@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "3.0.0.1",
+  "contentVersion": "3.0.0.2",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -154,6 +154,7 @@
     "virtualNetworkName": "[concat(variables('virtualNetworkNamePrefix'), '-', variables('uniqueSuffix'))]",
     "vmName": "[concat(variables('vmNamePrefix'), '-', variables('uniqueSuffix'))]",
     "scriptName": "[concat('installBrowserBox', '-', variables('uniqueSuffix'))]",
+    "scriptRef": "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName'), variables('scriptName'))]",
     "dnsName": "[concat('bb', variables('uniqueSuffix'))]",
     "addressPrefix": "10.0.0.0/16",
     "subnetPrefix": "10.0.0.0/24",
@@ -374,7 +375,7 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('vmName'), variables('scriptName'))]"
+        "[variables('scriptRef')]"
       ],
       "properties": {
         "description": "Alert when custom metric is logged",
