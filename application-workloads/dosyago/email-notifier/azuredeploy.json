@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "2.3.0.2",
+  "contentVersion": "2.4.0.2",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -355,6 +355,7 @@
         "severity": 3,
         "enabled": true,
         "evaluationFrequency": "PT1M",
+        "windowSize": "PT1M",
         "scopes": [
           "[resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix')))]"
         ],
@@ -412,6 +413,4 @@
     }
   }
 }
-
-
 
