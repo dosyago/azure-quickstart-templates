@@ -315,12 +315,72 @@
       }
     },
     {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2015-05-01",
+      "name": "[concat('yourApplicationInsights',variables('uniqueSuffix'))]",
+      "location": "[resourceGroup().location]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/actionGroups",
+      "apiVersion": "2019-06-01",
+      "name": "[concat('yourActionGroupName',variables('uniqueSuffix'))]",
+      "location": "global",
+      "properties": {
+        "groupShortName": "AG1",
+        "enabled": true,
+        "emailReceivers": [
+          {
+            "name": "sendToAdmin",
+            "emailAddress": "[parameters('userEmail')]",
+            "useCommonAlertSchema": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Insights/metricAlerts",
+      "apiVersion": "2018-03-01",
+      "name": "[concat('yourAlertRule',variables('uniqueSuffix'))]",
+      "location": "global",
+      "properties": {
+        "description": "Alert when custom metric is logged",
+        "severity": 3,
+        "enabled": true,
+        "scopes": [
+          "[resourceId('Microsoft.Insights/components', conacat('yourApplicationInsights', variables('uniqueSuffix')))]"
+        ],
+        "criteria": {
+          "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+          "allOf": [
+            {
+              "name": "Trigger",
+              "metricName": "CustomMetric",
+              "operator": "GreaterThan",
+              "threshold": 0,
+              "timeAggregation": "Total",
+              "criteriaType": "StaticThresholdCriterion"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(variables('vmNamePrefix'), '/installBrowserBox', '.', variables('uniqueSuffix'))]",
       "apiVersion": "2023-03-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
+        "[resourceId('Microsoft.Insights/metricAlerts', conacat('yourAlertRule', variables('uniqueSuffix')))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -328,10 +388,10 @@
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('install_browserbox.sh', parameters('_artifactsLocationSasToken')))]"]
+          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('bash install_browserbox.sh ', parameters('userEmail'), ' ', variables('actualHostname'), ' ', parameters('token'), ' ', parameters('installDocViewer'), ' ', parameters('understanding'))]"
+          "commandToExecute": "[concat('bash notifier.sh ', reference(resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix')), '2015-05-01').InstrumentationKey)]"
         }
       }
     }
@@ -347,4 +407,6 @@
     }
   }
 }
+
+
 
