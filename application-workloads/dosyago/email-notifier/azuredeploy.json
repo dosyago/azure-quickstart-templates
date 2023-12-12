@@ -319,6 +319,27 @@
       }
     },
     {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vmNamePrefix'), '/installBrowserBox', '.', variables('uniqueSuffix'))]",
+      "apiVersion": "2023-03-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.1",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('bash notifier.sh ', reference(resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix'))), '2015-05-01').InstrumentationKey)]"
+        }
+      }
+    },
+    {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2015-05-01",
       "name": "[concat('yourApplicationInsights',variables('uniqueSuffix'))]",
@@ -350,6 +371,10 @@
       "apiVersion": "2018-03-01",
       "name": "[concat('yourAlertRule',variables('uniqueSuffix'))]",
       "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', concat(variables('vmNamePrefix'), '/installBrowserBox', '.', variables('uniqueSuffix')))]"
+      ],
       "properties": {
         "description": "Alert when custom metric is logged",
         "severity": 3,
@@ -377,28 +402,6 @@
             "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
           }
         ]
-      }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmNamePrefix'), '/installBrowserBox', '.', variables('uniqueSuffix'))]",
-      "apiVersion": "2023-03-01",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Insights/metricAlerts', concat('yourAlertRule', variables('uniqueSuffix')))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Azure.Extensions",
-        "type": "CustomScript",
-        "typeHandlerVersion": "2.1",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('bash notifier.sh ', reference(resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix'))), '2015-05-01').InstrumentationKey)]"
-        }
       }
     }
   ],
