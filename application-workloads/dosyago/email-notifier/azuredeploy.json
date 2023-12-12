@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "2.0.0.1",
+  "contentVersion": "2.0.0.2",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -22,6 +22,7 @@
     },
     "adminUsername": {
       "type": "string",
+      "defaultValue": "cris",
       "metadata": {
         "description": "Administrator username for the Virtual Machine."
       }
@@ -48,6 +49,7 @@
     },
     "userEmail": {
       "type": "string",
+      "defaultValue": "cris@dosyago.com",
       "metadata": {
         "description": "The email address of the user."
       }
@@ -61,12 +63,14 @@
     },
     "token": {
       "type": "string",
+      "defaultValue": "abc123",
       "metadata": {
         "description": "A secret for the login link."
       }
     },
     "imageChoice": {
       "type": "string",
+      "defaultValue": "Ubuntu 22.04 LTS (gen 2)",
       "allowedValues": [
         "CentOS 8.5 (gen 2)",
         "Ubuntu 22.04 LTS (gen 2)",
