@@ -3,7 +3,7 @@
 region="${1//[[:space:]]/}"
 resourceId="${2//[[:space:]]/}"
 
-command -v jq || sudo apt install jq
+command -v jq || sudo apt install -y jq
 
 # Function to get access token from IMDS
 getAuthToken() {
