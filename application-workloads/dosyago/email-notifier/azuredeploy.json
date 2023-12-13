@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "4.3.2.2",
+  "contentVersion": "4.3.2.3",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -279,6 +279,9 @@
       "apiVersion": "2020-06-01",
       "name": "[variables('vmName')]",
       "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
       ],
@@ -318,6 +321,19 @@
             }
           ]
         }
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2017-09-01",
+      "name": "[guid(resourceId('Microsoft.Compute/virtualMachines/', variables('vmName')), 'MonitoringMetricsPublisher')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[concat(subscription().id, '/providers/Microsoft.Authorization/roleDefinitions/', '3913510d-42f4-4e42-8a64-420c390055eb')]",  
+        "principalId": "[reference(variables('vmName'), '2019-03-01', 'Full').identity.principalId]",
+        "scope": "[resourceGroup().id]"
       }
     },
     {

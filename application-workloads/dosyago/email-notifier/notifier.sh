@@ -1,55 +1,59 @@
 #!/bin/bash
 
-appInsightsKey="$1"
+region="$1"
+resourceId="$2"
 
-sendMetric() {
-  local message="The time is now $(date)"
-  curl -X POST -H "Content-Type: application/json" -d "{
-    \"data\": {
-      \"baseData\": {
-        \"metric\": {
-          \"name\": \"CustomMetric\",
-          \"value\": 1,
-          \"properties\": {
-            \"message\": \"'"$message"'\"
-          }
-        }
-      }
-    }
-  }" "https://dc.services.visualstudio.com/v2/track" -H "x-api-key: '"$appInsightsKey"'"
+# Function to get access token from IMDS
+getAuthToken() {
+  accessToken=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://monitor.azure.com' -H Metadata:true -s | jq -r '.access_token')
+  echo $accessToken
 }
 
-sendMetric
+# Function to send custom metric
+sendMetric() {
+  accessToken=$(getAuthToken)
+  currentTime=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-# Run sendMetric in background after a delay using nohup
-nohup bash -c '
-  # Function to send data to Application Insights
-  sendMetric() {
-    local message="The time is now $(date)"
-    curl -X POST -H "Content-Type: application/json" -d "{
-      \"data\": {
-        \"baseData\": {
-          \"metric\": {
-            \"name\": \"CustomMetric\",
-            \"value\": 1,
-            \"properties\": {
-              \"message\": \"'"$message"'\"
-            }
+  metricData='{
+    "time": "2018-08-20T11:25:20-7:00",
+    "data": {
+      "baseData": {
+        "metric": "Memory Bytes in Use",
+        "namespace": "Memory Profile",
+        "dimNames": [
+          "Process"
+        ],
+        "series": [
+          {
+            "dimValues": [
+              "ContosoApp.exe"
+            ],
+            "min": 10,
+            "max": 89,
+            "sum": 190,
+            "count": 4
+          },
+          {
+            "dimValues": [
+              "SalesApp.exe"
+            ],
+            "min": 10,
+            "max": 23,
+            "sum": 86,
+            "count": 4
           }
-        }
+        ]
       }
-    }" "https://dc.services.visualstudio.com/v2/track" -H "x-api-key: '"$appInsightsKey"'"
-  }
+    }
+  }'
 
-  # Wait for 15 seconds
-  sleep 15
+  # Replace <region> and <resourceId> with actual values
+  curl -X POST "https://${region}.monitoring.azure.com${resourceId}/metrics" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $accessToken" \
+    -d "$metricData"
+}
 
-  # Send the metric
-  sendMetric
-' &> /dev/null &
-
-sleep 5
-
-# Exit script immediately with status 0
-exit 0
+# Send the metric
+sendMetric
 
