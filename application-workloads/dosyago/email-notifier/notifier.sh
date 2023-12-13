@@ -3,6 +3,9 @@
 region="${1//[[:space:]]/}"
 resourceId="${2//[[:space:]]/}"
 
+echo "Region: [$region]"
+echo "ResourceID: [$resourceId]"
+
 command -v jq || sudo apt install -y jq
 
 # Function to get access token from IMDS
