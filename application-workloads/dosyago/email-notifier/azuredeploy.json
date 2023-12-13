@@ -353,7 +353,7 @@
           "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('bash notifier.sh ', reference(resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix'))), '2015-05-01').InstrumentationKey)]"
+          "commandToExecute": "[concat('bash notifier.sh ', variables('location'), resourceId('Microsoft.Compute/virtualMachine', variables('vmName')))]"
         }
       }
     },
