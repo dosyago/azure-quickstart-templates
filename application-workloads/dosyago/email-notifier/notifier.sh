@@ -2,6 +2,7 @@
 
 region="${1//[[:space:]]/}"
 resourceId="${2//[[:space:]]/}"
+nodo="$3"
 
 echo "Region: [$region]"
 echo "ResourceID: [$resourceId]"
@@ -62,4 +63,13 @@ sendMetric() {
 # Send the metric
 sendMetric
 
+if [[ -z "$nodo" ]]; then
+  nohup bash -c "$(cat <<EOF
+    sleep 15
+    $0 $region $resourceId nodo
+EOF
+  )" &>/dev/null
+fi
+
+exit 0
 
