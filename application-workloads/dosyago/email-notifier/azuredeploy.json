@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "5.1.0.1",
+  "contentVersion": "5.1.0.2",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -333,7 +333,7 @@
       "properties": {
         "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '3913510d-42f4-4e42-8a64-420c390055eb')]",
         "principalId": "[reference(variables('vmName'), '2019-03-01', 'Full').identity.principalId]",
-        "scope": "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
+        "scope": "/"
       }
     },
     {
