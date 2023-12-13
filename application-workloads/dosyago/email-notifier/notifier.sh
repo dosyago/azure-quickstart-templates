@@ -4,14 +4,15 @@ region="${1//[[:space:]]/}"
 resourceId="${2//[[:space:]]/}"
 nodo="$3"
 
+
 echo "Region: [$region]"
 echo "ResourceID: [$resourceId]"
 
 command -v jq || sudo apt install -y jq
 
-# Function to get access token from IMDS
+# Function to get access token from Azure AD
 getAuthToken() {
-  accessToken=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://monitor.azure.com' -H Metadata:true -s | jq -r '.access_token')
+  accessToken=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2021-01-01&resource=https://management.azure.com/' -H Metadata:true -s | jq -r '.access_token')
   echo $accessToken
 }
 
@@ -20,6 +21,7 @@ sendMetric() {
   local accessToken=$(getAuthToken)
   local currentTime=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+  # Construct the metric data JSON
   local metricData='{
     "time": "'$currentTime'",
     "data": {
@@ -53,8 +55,11 @@ sendMetric() {
     }
   }'
 
-  # Replace <region> and <resourceId> with actual values
-  curl -X POST "https://${region}.monitoring.azure.com${resourceId}/metrics" \
+  # Azure Monitor Management API endpoint
+  local apiEndpoint="https://management.azure.com/${resourceId}/providers/microsoft.insights/metrics?api-version=2021-01-01"
+
+  # Send the metric data
+  curl -X POST "$apiEndpoint" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $accessToken" \
     -d "$metricData"
