@@ -23,7 +23,7 @@ sendMetric() {
     "time": "'$currentTime'",
     "data": {
       "baseData": {
-        "metric": "Memory Bytes in Use",
+        "metric": "CustomBytes",
         "namespace": "Memory Profile",
         "dimNames": [
           "Process"
