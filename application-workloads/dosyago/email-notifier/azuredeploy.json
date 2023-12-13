@@ -388,7 +388,7 @@
       "type": "Microsoft.Insights/metricAlerts",
       "apiVersion": "2018-03-01",
       "name": "[concat('yourAlertRule',variables('uniqueSuffix'))]",
-      "location": "[parameters('location')]",
+      "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
         "[variables('scriptRef')]"
