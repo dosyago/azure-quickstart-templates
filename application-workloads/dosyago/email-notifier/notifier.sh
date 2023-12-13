@@ -1,9 +1,9 @@
 #!/bin/bash
 
-region="$1"
-resourceId="$2"
+region="${1//[[:space:]]/}"
+resourceId="${2//[[:space:]]/}"
 
-sudo apt install jq
+command -v jq || sudo apt install jq
 
 # Function to get access token from IMDS
 getAuthToken() {
