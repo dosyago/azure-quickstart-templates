@@ -11,11 +11,11 @@ getAuthToken() {
 
 # Function to send custom metric
 sendMetric() {
-  accessToken=$(getAuthToken)
-  currentTime=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  local accessToken=$(getAuthToken)
+  local currentTime=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-  metricData='{
-    "time": "2018-08-20T11:25:20-7:00",
+  local metricData='{
+    "time": "'$currentTime'",
     "data": {
       "baseData": {
         "metric": "Memory Bytes in Use",
