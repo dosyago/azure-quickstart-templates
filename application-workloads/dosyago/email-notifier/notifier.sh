@@ -3,6 +3,8 @@
 region="$1"
 resourceId="$2"
 
+sudo apt install jq
+
 # Function to get access token from IMDS
 getAuthToken() {
   accessToken=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://monitor.azure.com' -H Metadata:true -s | jq -r '.access_token')
