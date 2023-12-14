@@ -79,7 +79,7 @@ console.log('Custom event sent to Application Insights');
 // Function to check metric availability
 async function checkMetricAvailability() {
   const credential = new DefaultAzureCredential();
-  const monitorQueryClient = new MonitorQueryClient(credential);
+  const monitorQueryClient = new MetricsQueryClient(credential);
   const appId = process.env.APPINSIGHTS_APP_ID; // Set this environment variable to your Application Insights App ID
   const MAX_TRIES = 150; // around about 12 and a half minutes
   let tries = 0;
