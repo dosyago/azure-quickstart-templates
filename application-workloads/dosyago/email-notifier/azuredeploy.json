@@ -348,6 +348,27 @@
         "principalId": "[reference(variables('vmName'), '2019-03-01', 'Full').identity.principalId]",
         "scope": "[resourceGroup().id]"
       }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[variables('scriptName')]",
+      "apiVersion": "2023-03-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.1",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('bash notifier.sh ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachine', variables('vmName')))]"
+        }
+      }
     }
   ],
   "outputs": {
