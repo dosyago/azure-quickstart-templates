@@ -1,15 +1,18 @@
 #!/bin/bash
 
 adminUsername=$1  # Assuming the first argument is the admin username
-
-# Outer heredoc starts here
-sudo -u "$adminUsername" bash << 'EOF'
-# Inner script starts after this line
-
-# Parameters
 region="${2//[[:space:]]/}"
 resourceId="${3//[[:space:]]/}"
 connectionString="${4//[[:space:]]/}"
+
+# Outer heredoc starts here
+sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" <<'EOF'
+# Inner script starts after this line
+
+# Parameters received from outer script
+region="$1"
+resourceId="$2"
+connectionString="$3"
 
 # Logging
 echo "Region: [$region]"
@@ -18,15 +21,16 @@ echo "ResourceID: [$resourceId]"
 # Install jq if not present
 command -v jq || sudo apt install -y jq
 
+sleep 5
+
 # Install Node.js using nvm
 cd $HOME
-touch $HOME/.bash_profile
+touch $HOME/.bashrc
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 source $HOME/.nvm/nvm.sh
 nvm install node
 
 # Create and navigate to the application directory
-
 mkdir test-app
 cd test-app
 
@@ -37,7 +41,7 @@ npm init -y
 npm i --save applicationinsights
 
 # Export the connection string to an environment variable
-export APPINSIGHTS_CONNECTIONSTRING="${connectionString}"
+export APPINSIGHTS_CONNECTIONSTRING="$connectionString"
 
 # Create a Node.js script using a heredoc
 cat << 'INNER_EOF' > app.js
@@ -61,8 +65,6 @@ node app.js
 # End of the inner script
 EOF
 # End of the outer heredoc
-
-# No commands will be run past this point as the admin user
 
 exit 0
 
