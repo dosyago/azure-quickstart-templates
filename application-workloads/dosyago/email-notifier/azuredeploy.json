@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "6.3.0.1",
+  "contentVersion": "6.3.0.2",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -350,27 +350,6 @@
       }
     },
     {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[variables('scriptName')]",
-      "apiVersion": "2023-03-01",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Azure.Extensions",
-        "type": "CustomScript",
-        "typeHandlerVersion": "2.1",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('bash notifier.sh ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachine', variables('vmName')), ' ', listKeys(resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix'))), '2015-05-01').connectionString)]"
-        }
-      }
-    },
-    {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2015-05-01",
       "name": "[concat('yourApplicationInsights',variables('uniqueSuffix'))]",
@@ -395,6 +374,28 @@
             "useCommonAlertSchema": true
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[variables('scriptName')]",
+      "apiVersion": "2023-03-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
+        "[resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix')))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.1",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('bash notifier.sh ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachine', variables('vmName')), ' ', listKeys(resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix'))), '2015-05-01').connectionString)]"
+        }
       }
     },
     {
