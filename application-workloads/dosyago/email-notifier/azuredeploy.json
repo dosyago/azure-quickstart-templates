@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "6.3.5.2",
+  "contentVersion": "6.3.5.3",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -394,7 +394,7 @@
           "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('bash notifier.sh ', parameters('adminUsername'), ' ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), ' ', reference(resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '2020-02-02', 'Full').connectionString)]"
+          "commandToExecute": "[concat('bash notifier.sh ', parameters('adminUsername'), ' ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), ' ', reference(resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '2020-02-02', 'Full').properties.connectionString)]"
         }
       }
     }
