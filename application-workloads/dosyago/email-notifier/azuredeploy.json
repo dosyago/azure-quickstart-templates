@@ -366,7 +366,7 @@
           "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('sudo -u ', parameters('adminUsername'), ' bash notifier.sh ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')))]"
+          "commandToExecute": "[concat(bash notifier.sh ', parameters('adminUsername'), ' ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')))]"
         }
       }
     }
