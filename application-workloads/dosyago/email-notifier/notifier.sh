@@ -18,6 +18,10 @@ connectionString="$3"
 echo "Region: [$region]"
 echo "ResourceID: [$resourceId]"
 
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_SUSPEND=1
+export NEEDRESTART_MODE=a
+
 # Install jq if not present
 command -v jq || sudo apt install -y jq
 
