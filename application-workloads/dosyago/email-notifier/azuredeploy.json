@@ -163,12 +163,27 @@
   },
   "resources": [
     {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2020-08-01",
+      "name": "[concat('yourLogAnalyticsWorkspace-', variables('vmName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        }
+      }
+    },
+    {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
       "name": "[concat('appInsights-', variables('vmName'))]",
       "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', concat('yourLogAnalyticsWorkspace-', variables('vmName')))]"
+      ],
       "properties": {
         "Application_Type": "web",
+        "WorkspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', concat('yourLogAnalyticsWorkspace-', variables('vmName')))]",
         "Flow_Type": "Bluefield",
         "Request_Source": "rest",
         "RetentionInDays": 90 
