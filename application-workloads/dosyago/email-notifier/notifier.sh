@@ -59,6 +59,11 @@ const loginLinkUrl = "https://example.com/login?token=abc123";
 
 // Sending a custom event
 client.trackEvent({name: "LoginLink", properties: {url: loginLinkUrl}});
+client.trackMetric({
+  name: "LoginLink",
+  value: 1,
+  properties: { url: loginLinkUrl }  // Additional data
+});
 
 console.log('Custom event sent to Application Insights');
 INNER_EOF
