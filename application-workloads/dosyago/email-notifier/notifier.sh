@@ -1,80 +1,53 @@
 #!/bin/bash
 
+# Parameters
 region="${1//[[:space:]]/}"
 resourceId="${2//[[:space:]]/}"
-nodo="$3"
+connectionString="${3//[[:space:]]/}"
 
-
+# Logging
 echo "Region: [$region]"
 echo "ResourceID: [$resourceId]"
 
+# Install jq if not present
 command -v jq || sudo apt install -y jq
 
-# Function to get access token from Azure AD
-getAuthToken() {
-  accessToken=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2021-01-01&resource=https://management.azure.com/' -H Metadata:true -s | jq -r '.access_token')
-  echo $accessToken
-}
+# Install Node.js using nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.nvm/nvm.sh
+nvm install node
 
-# Function to send custom metric
-sendMetric() {
-  local accessToken=$(getAuthToken)
-  local currentTime=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+# Create and navigate to the application directory
+mkdir test-app
+cd test-app
 
-  # Construct the metric data JSON
-  local metricData='{
-    "time": "'$currentTime'",
-    "data": {
-      "baseData": {
-        "metric": "CustomMetric",
-        "namespace": "Memory Profile",
-        "dimNames": [
-          "Process"
-        ],
-        "series": [
-          {
-            "dimValues": [
-              "ContosoApp.exe"
-            ],
-            "min": 10,
-            "max": 89,
-            "sum": 190,
-            "count": 4
-          },
-          {
-            "dimValues": [
-              "SalesApp.exe"
-            ],
-            "min": 10,
-            "max": 23,
-            "sum": 86,
-            "count": 4
-          }
-        ]
-      }
-    }
-  }'
+# Initialize a new Node.js project
+npm init -y
 
-  # Azure Monitor Management API endpoint
-  local apiEndpoint="https://management.azure.com/${resourceId}/providers/microsoft.insights/metrics?api-version=2021-01-01"
+# Install Application Insights
+npm i --save applicationinsights
 
-  # Send the metric data
-  curl -X POST "$apiEndpoint" \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer $accessToken" \
-    -d "$metricData"
-}
+# Export the connection string to an environment variable
+export APPINSIGHTS_CONNECTIONSTRING="${connectionString}"
 
-# Send the metric
-sendMetric
+# Create a Node.js script using a heredoc
+cat << 'EOF' > app.js
+const appInsights = require('applicationinsights');
+appInsights.setup().start();
 
-if [[ -z "$nodo" ]]; then
-  nohup bash -c "$(cat <<EOF
-    sleep 15
-    $0 $region $resourceId nodo
+const client = appInsights.defaultClient;
+
+// Example URL for the login link
+const loginLinkUrl = "https://example.com/login?token=abc123";
+
+// Sending a custom event
+client.trackEvent({name: "LoginLink", properties: {url: loginLinkUrl}});
+
+console.log('Custom event sent to Application Insights');
 EOF
-  )" &>/dev/null
-fi
+
+# Run the Node.js script
+node app.js
 
 exit 0
 
