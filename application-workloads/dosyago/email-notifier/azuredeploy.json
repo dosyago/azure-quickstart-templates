@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "6.3.4.1",
+  "contentVersion": "6.3.4.2",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -374,28 +374,6 @@
         "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
         "principalId": "[reference(variables('vmName'), '2019-03-01', 'Full').identity.principalId]",
         "scope": "[resourceGroup().id]"
-      }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[variables('scriptName')]",
-      "apiVersion": "2023-03-01",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Azure.Extensions",
-        "type": "CustomScript",
-        "typeHandlerVersion": "2.1",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('bash notifier.sh ', parameters('adminUsername'), ' ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), ' ', listKeys(resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '2020-02-02').connectionString)]"
-        }
       }
     }
   ],
