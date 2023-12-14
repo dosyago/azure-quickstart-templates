@@ -50,6 +50,10 @@ export APPINSIGHTS_CONNECTION_STRING="$connectionString"
 # Create a Node.js script using a heredoc
 cat << 'INNER_EOF' > app.js
 const appInsights = require('applicationinsights');
+const { DefaultAzureCredential } = require('@azure/identity');
+const { MonitorQueryClient } = require('@azure/monitor-query');
+const { delay } = require('bluebird');
+
 appInsights.setup(process.env.APPINSIGHTS_CONNECTION_STRING).setSendLiveMetrics(true).start();
 
 const client = appInsights.defaultClient;
@@ -57,7 +61,7 @@ const client = appInsights.defaultClient;
 // Example URL for the login link
 const loginLinkUrl = "https://example.com/login?token=abc123";
 
-// Sending a custom event
+// Sending a custom event and metric
 client.trackEvent({name: "LoginLink", properties: {url: loginLinkUrl}});
 client.trackMetric({
   name: "LoginLink",
@@ -66,6 +70,53 @@ client.trackMetric({
 });
 
 console.log('Custom event sent to Application Insights');
+
+// Function to check metric availability
+async function checkMetricAvailability() {
+  const credential = new DefaultAzureCredential();
+  const monitorQueryClient = new MonitorQueryClient(credential);
+  const appId = process.env.APPINSIGHTS_APP_ID; // Set this environment variable to your Application Insights App ID
+  const MAX_TRIES = 150; // around about 12 and a half minutes
+  let tries = 0;
+  let code = 0;
+
+  while (true) {
+    tries++;
+    try {
+      const kqlQuery = `customMetrics | where name == 'LoginLink'`;
+      const response = await monitorQueryClient.queryWorkspace(appId, kqlQuery, { timespan: "P1D" });
+      if (response.tables[0].rows.length > 0) {
+        console.log('Metric is available.');
+        break;
+      } else {
+        console.log('Metric not available yet, retrying in 5 seconds...');
+        if ( (tries % 5) == 0 ) {
+          console.log('5 checks without metric. Resending it...');
+          client.trackMetric({
+            name: "LoginLink",
+            value: 1,
+            properties: { url: loginLinkUrl }  // Additional data
+          });
+        } else if ( tries > MAX_TRIES ) {
+          console.error(`Exceeded ${MAX_TRIES} checks and no metric. Quitting...`);
+          code = 1;
+          break;
+        }
+        await delay(5000);
+      }
+    } catch (error) {
+      console.error('Error querying Application Insights:', error);
+      tries += 30; // penalize an error try
+      await delay(5000); // Retry after delay even in case of error
+    }
+  }
+
+  console.log('Exiting...');
+  process.exit(code);
+}
+
+// Call the function
+checkMetricAvailability();
 INNER_EOF
 
 # Run the Node.js script
