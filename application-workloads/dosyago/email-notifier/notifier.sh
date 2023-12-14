@@ -4,20 +4,23 @@ adminUsername=$1  # Assuming the first argument is the admin username
 region="${2//[[:space:]]/}"
 resourceId="${3//[[:space:]]/}"
 connectionString="${4//[[:space:]]/}"
+appId="${5//[[:space:]]/}"
 
 # Outer heredoc starts here
-sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" <<'EOF'
+sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" "$appId" <<'EOF'
 # Inner script starts after this line
 
 # Parameters received from outer script
 region="$1"
 resourceId="$2"
 connectionString="$3"
+appId="$4"
 
 # Logging
 echo "Region: [$region]"
 echo "ResourceID: [$resourceId]"
 echo "ConnectionString: [$connectionString]"
+echo "AppInsights App ID: [$appId]"
 
 export DEBIAN_FRONTEND=noninteractive
 export NEEDRESTART_SUSPEND=1
@@ -47,6 +50,7 @@ npm i --save applicationinsights @azure/identity @azure/monitor-query
 
 # Export the connection string to an environment variable
 export APPINSIGHTS_CONNECTION_STRING="$connectionString"
+export APPINSIGHTS_APP_ID="$appId"
 
 # Create a Node.js script using a heredoc
 cat << 'INNER_EOF' > app.js
