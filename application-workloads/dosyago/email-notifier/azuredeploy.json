@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "6.3.2.3",
+  "contentVersion": "6.3.2.4",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -366,7 +366,7 @@
           "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat(bash notifier.sh ', parameters('adminUsername'), ' ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')))]"
+          "commandToExecute": "[concat('bash notifier.sh ', parameters('adminUsername'), ' ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')))]"
         }
       }
     }
