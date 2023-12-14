@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "6.3.5.6",
+  "contentVersion": "6.3.11.11",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -159,7 +159,9 @@
     "addressPrefix": "10.0.0.0/16",
     "subnetPrefix": "10.0.0.0/24",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
-    "actualHostname": "[concat(variables('dnsName'), '.', parameters('location'), '.', 'cloudapp.azure.com')]"
+    "actualHostname": "[concat(variables('dnsName'), '.', parameters('location'), '.', 'cloudapp.azure.com')]",
+    "rolePublisher": "[guid(resourceId('Microsoft.Compute/virtualMachines/', variables('vmName')), 'MonitoringMetricsPublisher')]",
+    "roleReader": "[guid(resourceId('Microsoft.Compute/virtualMachines/', variables('vmName')), 'MonitoringReader')]"
   },
   "resources": [
     {
@@ -353,7 +355,7 @@
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(resourceId('Microsoft.Compute/virtualMachines/', variables('vmName')), 'MonitoringMetricsPublisher')]",
+      "name": "[variables('rolePublisher')]",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
       ],
@@ -366,7 +368,7 @@
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(resourceId('Microsoft.Compute/virtualMachines/', variables('vmName')), 'MonitoringReader')]",
+      "name": "[variables('roleReader')]",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
       ],
@@ -383,7 +385,9 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]"
+        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]",
+        "[resourceId('Microsoft.Authorization/roleAssignments', variables('roleReader'))]",
+        "[resourceId('Microsoft.Authorization/roleAssignments', variables('rolePublisher'))]"
       ],
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
@@ -403,6 +407,9 @@
       "apiVersion": "2019-06-01",
       "name": "[concat('yourActionGroupName',variables('uniqueSuffix'))]",
       "location": "global",
+      "dependsOn": [
+        "[variables('scriptRef')]"
+      ],
       "properties": {
         "groupShortName": "AG1",
         "enabled": true,
@@ -421,9 +428,7 @@
       "name": "[concat('yourAlertRule',variables('uniqueSuffix'))]",
       "location": "global",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]",
-        "[variables('scriptRef')]"
+        "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
       ],
       "properties": {
         "description": "Alert when custom metric is logged",

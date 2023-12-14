@@ -17,6 +17,7 @@ connectionString="$3"
 # Logging
 echo "Region: [$region]"
 echo "ResourceID: [$resourceId]"
+echo "ConnectionString: [$connectionString]"
 
 export DEBIAN_FRONTEND=noninteractive
 export NEEDRESTART_SUSPEND=1
@@ -42,7 +43,7 @@ cd test-app
 npm init -y
 
 # Install Application Insights
-npm i --save applicationinsights
+npm i --save applicationinsights @azure/identity @azure/monitor-query
 
 # Export the connection string to an environment variable
 export APPINSIGHTS_CONNECTION_STRING="$connectionString"
@@ -120,11 +121,11 @@ checkMetricAvailability();
 INNER_EOF
 
 # Run the Node.js script
-node app.js
+node app.js || (echo "Node had an error" >&2 && exit 1)
 
 # End of the inner script
 EOF
-# End of the outer heredoc
+# End of the outer heredoc. Exit with the exit status of the heredoc bash script
 
-exit 0
+exit $?
 
