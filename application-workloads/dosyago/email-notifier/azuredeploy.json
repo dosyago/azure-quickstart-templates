@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "6.3.0.8",
+  "contentVersion": "6.3.1.0",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -347,98 +347,6 @@
         "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
         "principalId": "[reference(variables('vmName'), '2019-03-01', 'Full').identity.principalId]",
         "scope": "[resourceGroup().id]"
-      }
-    },
-    {
-      "type": "Microsoft.Insights/components",
-      "apiVersion": "2020-02-02",
-      "name": "[concat('yourApplicationInsights',variables('uniqueSuffix'))]",
-      "location": "[resourceGroup().location]",
-      "kind": "web",
-      "properties": {
-        "Application_Type": "web",
-        "DisableIpMasking": true,
-        "Flow_Type": "Bluefield",
-        "ImmediatePurgeDataOn30Days": true,
-        "publicNetworkAccessForIngestion": "Enabled",
-        "SamplingPercentage": 100
-      }
-    },
-    {
-      "type": "Microsoft.Insights/actionGroups",
-      "apiVersion": "2019-06-01",
-      "name": "[concat('yourActionGroupName',variables('uniqueSuffix'))]",
-      "location": "global",
-      "properties": {
-        "groupShortName": "AG1",
-        "enabled": true,
-        "emailReceivers": [
-          {
-            "name": "sendToAdmin",
-            "emailAddress": "[parameters('userEmail')]",
-            "useCommonAlertSchema": true
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[variables('scriptName')]",
-      "apiVersion": "2023-03-01",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix')))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Azure.Extensions",
-        "type": "CustomScript",
-        "typeHandlerVersion": "2.1",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('bash notifier.sh ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachine', variables('vmName')), ' ', listKeys(resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix'))), '2020-02-02').connectionString)]"
-        }
-      }
-    },
-    {
-      "type": "Microsoft.Insights/metricAlerts",
-      "apiVersion": "2018-03-01",
-      "name": "[concat('yourAlertRule',variables('uniqueSuffix'))]",
-      "location": "global",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[variables('scriptRef')]"
-      ],
-      "properties": {
-        "description": "Alert when custom metric is logged",
-        "severity": 3,
-        "enabled": true,
-        "evaluationFrequency": "PT1M",
-        "windowSize": "PT1M",
-        "scopes": [
-          "[resourceId('Microsoft.Insights/components', concat('yourApplicationInsights', variables('uniqueSuffix')))]"
-        ],
-        "criteria": {
-          "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
-          "allOf": [
-            {
-              "name": "Trigger",
-              "metricName": "CustomMetric",
-              "operator": "GreaterThan",
-              "threshold": 0,
-              "timeAggregation": "Total",
-              "criteriaType": "StaticThresholdCriterion"
-            }
-          ]
-        },
-        "actions": [
-          {
-            "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
-          }
-        ]
       }
     }
   ],
