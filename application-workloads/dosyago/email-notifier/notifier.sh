@@ -45,12 +45,12 @@ npm init -y
 npm i --save applicationinsights
 
 # Export the connection string to an environment variable
-export APPINSIGHTS_CONNECTIONSTRING="$connectionString"
+export APPINSIGHTS_CONNECTION_STRING="$connectionString"
 
 # Create a Node.js script using a heredoc
 cat << 'INNER_EOF' > app.js
 const appInsights = require('applicationinsights');
-appInsights.setup().start();
+appInsights.setup(process.env.APPINSIGHTS_CONNECTION_STRING).setSendLiveMetrics(true).start();
 
 const client = appInsights.defaultClient;
 

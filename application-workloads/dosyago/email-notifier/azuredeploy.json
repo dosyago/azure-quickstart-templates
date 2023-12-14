@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "6.3.5.3",
+  "contentVersion": "6.3.5.5",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -396,6 +396,62 @@
         "protectedSettings": {
           "commandToExecute": "[concat('bash notifier.sh ', parameters('adminUsername'), ' ', parameters('location'), ' ', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), ' ', reference(resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '2020-02-02', 'Full').properties.connectionString)]"
         }
+      }
+    },
+    {
+      "type": "Microsoft.Insights/actionGroups",
+      "apiVersion": "2019-06-01",
+      "name": "[concat('yourActionGroupName',variables('uniqueSuffix'))]",
+      "location": "global",
+      "properties": {
+        "groupShortName": "AG1",
+        "enabled": true,
+        "emailReceivers": [
+          {
+            "name": "sendToAdmin",
+            "emailAddress": "[parameters('userEmail')]",
+            "useCommonAlertSchema": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Insights/metricAlerts",
+      "apiVersion": "2018-03-01",
+      "name": "[concat('yourAlertRule',variables('uniqueSuffix'))]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
+        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]",
+        "[variables('scriptRef')]"
+      ],
+      "properties": {
+        "description": "Alert when custom metric is logged",
+        "severity": 3,
+        "enabled": true,
+        "evaluationFrequency": "PT1M",
+        "windowSize": "PT1M",
+        "scopes": [
+          "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]"
+        ],
+        "criteria": {
+          "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+          "allOf": [
+            {
+              "name": "Trigger",
+              "metricName": "LoginLink",
+              "operator": "GreaterThan",
+              "threshold": 0,
+              "timeAggregation": "Total",
+              "criteriaType": "StaticThresholdCriterion"
+            }
+          ]
+        },
+        "actions": [
+          {
+            "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
+          }
+        ]
       }
     }
   ],
