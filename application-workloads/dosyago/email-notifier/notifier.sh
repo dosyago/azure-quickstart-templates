@@ -13,6 +13,7 @@ echo "ResourceID: [$resourceId]"
 command -v jq || sudo apt install -y jq
 
 # Install Node.js using nvm
+touch ~/.bashrc
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 source ~/.nvm/nvm.sh
 nvm install node
