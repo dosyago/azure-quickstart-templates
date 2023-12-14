@@ -36,7 +36,7 @@ cd $HOME
 touch $HOME/.bashrc
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 source $HOME/.nvm/nvm.sh
-nvm install node
+nvm install v20 # we need v20 for the azure libraries
 
 # Create and navigate to the application directory
 mkdir test-app
@@ -46,7 +46,7 @@ cd test-app
 npm init -y
 
 # Install Application Insights
-npm i --save applicationinsights @azure/identity @azure/monitor-query
+npm i --save applicationinsights @azure/identity @azure/monitor-query bluebird
 
 # Export the connection string to an environment variable
 export APPINSIGHTS_CONNECTION_STRING="$connectionString"
@@ -56,7 +56,7 @@ export APPINSIGHTS_APP_ID="$appId"
 cat << 'INNER_EOF' > app.js
 const appInsights = require('applicationinsights');
 const { DefaultAzureCredential } = require('@azure/identity');
-const { MonitorQueryClient } = require('@azure/monitor-query');
+const { MetricsQueryClient } = require('@azure/monitor-query');
 const { delay } = require('bluebird');
 
 appInsights.setup(process.env.APPINSIGHTS_CONNECTION_STRING).setSendLiveMetrics(true).start();
