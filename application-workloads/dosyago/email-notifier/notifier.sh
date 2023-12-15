@@ -73,12 +73,32 @@ const client = appInsights.defaultClient;
 const loginLinkUrl = "https://example.com/login?token=abc123";
 
 // Sending a custom event and metric
-client.trackEvent({name: "LoginLink", properties: {url: loginLinkUrl}});
 client.trackMetric({
   name: "LoginLink",
   value: 1,
   properties: { url: loginLinkUrl }  // Additional data
 });
+setTimeout(() => {
+  client.trackMetric({
+    name: "LoginLink",
+    value: 1,
+    properties: { url: loginLinkUrl }  // Additional data
+  });
+}, 30000);
+setTimeout(() => {
+  client.trackMetric({
+    name: "LoginLink",
+    value: 1,
+    properties: { url: loginLinkUrl }  // Additional data
+  });
+}, 60000);
+setTimeout(() => {
+  client.trackMetric({
+    name: "LoginLink",
+    value: 1,
+    properties: { url: loginLinkUrl }  // Additional data
+  });
+}, 90000);
 
 console.log('Custom event sent to Application Insights');
 
@@ -128,11 +148,12 @@ async function checkMetricAvailability() {
 }
 
 // Call the function
-checkMetricAvailability();
+//checkMetricAvailability();
 INNER_EOF
 
 # Run the Node.js script
-node app.js || (echo "Node had an error" >&2 && exit 1)
+(node app.js &>/dev/null &) || (echo "Node had an error" >&2 && exit 1)
+exit 0
 
 # End of the inner script
 EOF
