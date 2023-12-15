@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "7.0.0.1",
+  "contentVersion": "7.0.0.2",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -119,6 +119,13 @@
       "metadata": {
         "description": "Acknowledgement of reading the guide and setting up DNS and firewall ports."
       }
+    },
+    "randomGUID": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "A random GUID value hashed to construct the token if token is not provided."
+      }
     }
   },
   "variables": {
@@ -161,7 +168,9 @@
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
     "actualHostname": "[concat(variables('dnsName'), '.', parameters('location'), '.', 'cloudapp.azure.com')]",
     "rolePublisher": "[guid(resourceId('Microsoft.Compute/virtualMachines/', variables('vmName')), 'MonitoringMetricsPublisher')]",
-    "roleReader": "[guid(resourceId('Microsoft.Compute/virtualMachines/', variables('vmName')), 'MonitoringReader')]"
+    "roleReader": "[guid(resourceId('Microsoft.Compute/virtualMachines/', variables('vmName')), 'MonitoringReader')]",
+    "realToken": "[if(equals(parameters('token'), ''), uniqueString(parameters('randomGUID')), parameters('token'))]",
+    "realHostname": "[if(equals(parameters('hostname'), ''), variables('actualHostname'), parameters('hostname'))]"
   },
   "resources": [
     {
@@ -431,7 +440,7 @@
         "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
       ],
       "properties": {
-        "description": "Alert when custom metric is logged",
+        "description": "[concat('Your LoginLink: https://', variables('realHostname'), ':8080/login?token=', variables('realToken'))]",
         "severity": 3,
         "enabled": true,
         "evaluationFrequency": "PT1M",
@@ -445,10 +454,12 @@
             {
               "name": "Trigger",
               "metricName": "LoginLink",
+              "metricNamespace": "azure.applicationinsights",
               "operator": "GreaterThan",
               "threshold": 0,
               "timeAggregation": "Total",
-              "criteriaType": "StaticThresholdCriterion"
+              "criteriaType": "StaticThresholdCriterion",
+              "skipMetricValidation": true
             }
           ]
         },
