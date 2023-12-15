@@ -5,10 +5,10 @@ region="${2//[[:space:]]/}"
 resourceId="${3//[[:space:]]/}"
 connectionString="${4//[[:space:]]/}"
 appId="${5//[[:space:]]/}"
-workspaceId="${6//[[:space:]]/}"
+appInsightsResourceId="${6//[[:space:]]/}"
 
 # Outer heredoc starts here
-sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" "$appId" "$workspaceId" <<'EOF'
+sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" "$appId" "$appInsightsResourceId" <<'EOF'
 # Inner script starts after this line
 APT=$(command -v apt-get || command -v apt || command -v dnf || command -v yum || command -v brew)
 
@@ -17,14 +17,14 @@ region="$1"
 resourceId="$2"
 connectionString="$3"
 appId="$4"
-workspaceId="$5"
+appInsightsResourceId="$5"
 
 # Logging
 echo "Region: [$region]"
 echo "ResourceID: [$resourceId]"
 echo "ConnectionString: [$connectionString]"
 echo "AppInsights App ID: [$appId]"
-echo "Log Analytics Workspace ID: [$workspaceId]"
+echo "AppInsights Resource ID: [$appInsightsResourceId]"
 
 export DEBIAN_FRONTEND=noninteractive
 export NEEDRESTART_SUSPEND=1
@@ -55,13 +55,14 @@ npm i --save applicationinsights @azure/identity @azure/monitor-query bluebird
 # Export the connection string to an environment variable
 export APPINSIGHTS_CONNECTION_STRING="$connectionString"
 export APPINSIGHTS_APP_ID="$appId"
-export WORKSPACE_ID="$workspaceId"
+export APPINSIGHTS_RESOURCE_ID="$appInsightsResourceId"
 
 # Create a Node.js script using a heredoc
 cat << 'INNER_EOF' > app.js
 const appInsights = require('applicationinsights');
 const { DefaultAzureCredential } = require('@azure/identity');
-const { Durations, LogsQueryClient } = require('@azure/monitor-query');
+const { Durations, MetricsQueryClient, LogsQueryClient } = require('@azure/monitor-query');
+console.log({LogsQueryClient});
 const { delay } = require('bluebird');
 
 appInsights.setup(process.env.APPINSIGHTS_CONNECTION_STRING).setSendLiveMetrics(true).start();
@@ -84,22 +85,23 @@ console.log('Custom event sent to Application Insights');
 // Function to check metric availability
 async function checkMetricAvailability() {
   const credential = new DefaultAzureCredential();
-  const monitorQueryClient = new LogsQueryClient(credential);
+  const monitorQueryClient = new MetricsQueryClient(credential);
   const appId = process.env.APPINSIGHTS_APP_ID; // Set this environment variable to your Application Insights App ID
-  const workspaceId = process.env.WORKSPACE_ID;
+  const appInsightsResourceId = process.env.APPINSIGHTS_RESOURCE_ID;
   const MAX_TRIES = 150; // around about 12 and a half minutes
   let tries = 0;
   let code = 0;
 
-  while (true) {
+  waitMetric: while (true) {
     tries++;
     try {
-      const kqlQuery = `traces | where customDimensions.url == '${loginLinkUrl}' and message == 'LoginLink'`;
-      const response = await monitorQueryClient.queryWorkspace(workspaceId, kqlQuery, { duration: Durations.twentyFourHours });
-      if (response.tables[0].rows.length > 0) {
-        console.log('Metric is available.');
-        break;
-      } else {
+      const iterator = await monitorQueryClient.listMetricDefinitions(appInsightsResourceId, {metricNamespace: "azure.applicationinsights"});
+      for await ( const result of iterator ) {
+        if(result.name == "LoginLink") {
+	  console.log('Metric is available.');
+	  break waitMetric;
+        }
+      }
         console.log('Metric not available yet, retrying in 5 seconds...');
         if ( (tries % 5) == 0 ) {
           console.log('5 checks without metric. Resending it...');
@@ -114,7 +116,6 @@ async function checkMetricAvailability() {
           break;
         }
         await delay(5000);
-      }
     } catch (error) {
       console.error('Error querying Application Insights:', error);
       tries += 30; // penalize an error try
@@ -128,7 +129,6 @@ async function checkMetricAvailability() {
 
 // Call the function
 checkMetricAvailability();
-
 INNER_EOF
 
 # Run the Node.js script
@@ -139,4 +139,5 @@ EOF
 # End of the outer heredoc. Exit with the exit status of the heredoc bash script
 
 exit $?
+
 
