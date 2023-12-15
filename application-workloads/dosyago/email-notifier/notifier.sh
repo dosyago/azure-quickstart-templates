@@ -8,7 +8,7 @@ appId="${5//[[:space:]]/}"
 workspaceId="${6//[[:space:]]/}"
 
 # Outer heredoc starts here
-sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" "$appId" <<'EOF'
+sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" "$appId" "$workspaceId" <<'EOF'
 # Inner script starts after this line
 APT=$(command -v apt-get || command -v apt || command -v dnf || command -v yum || command -v brew)
 
@@ -61,7 +61,7 @@ export WORKSPACE_ID="$workspaceId"
 cat << 'INNER_EOF' > app.js
 const appInsights = require('applicationinsights');
 const { DefaultAzureCredential } = require('@azure/identity');
-const { LogsQueryClient } = require('@azure/monitor-query');
+const { Durations, LogsQueryClient } = require('@azure/monitor-query');
 const { delay } = require('bluebird');
 
 appInsights.setup(process.env.APPINSIGHTS_CONNECTION_STRING).setSendLiveMetrics(true).start();
@@ -86,6 +86,7 @@ async function checkMetricAvailability() {
   const credential = new DefaultAzureCredential();
   const monitorQueryClient = new LogsQueryClient(credential);
   const appId = process.env.APPINSIGHTS_APP_ID; // Set this environment variable to your Application Insights App ID
+  const workspaceId = process.env.WORKSPACE_ID;
   const MAX_TRIES = 150; // around about 12 and a half minutes
   let tries = 0;
   let code = 0;
@@ -94,7 +95,7 @@ async function checkMetricAvailability() {
     tries++;
     try {
       const kqlQuery = `traces | where customDimensions.url == '${loginLinkUrl}' and message == 'LoginLink'`;
-      const response = await monitorQueryClient.queryWorkspace(workspaceId, kqlQuery, { timespan: "P1D" });
+      const response = await monitorQueryClient.queryWorkspace(workspaceId, kqlQuery, { duration: Durations.twentyFourHours });
       if (response.tables[0].rows.length > 0) {
         console.log('Metric is available.');
         break;
@@ -127,6 +128,7 @@ async function checkMetricAvailability() {
 
 // Call the function
 checkMetricAvailability();
+
 INNER_EOF
 
 # Run the Node.js script
