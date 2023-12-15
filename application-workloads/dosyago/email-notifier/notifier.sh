@@ -9,6 +9,7 @@ appId="${5//[[:space:]]/}"
 # Outer heredoc starts here
 sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" "$appId" <<'EOF'
 # Inner script starts after this line
+APT=$(command -v apt-get || command -v apt || command -v dnf || command -v yum || command -v brew)
 
 # Parameters received from outer script
 region="$1"
@@ -27,7 +28,7 @@ export NEEDRESTART_SUSPEND=1
 export NEEDRESTART_MODE=a
 
 # Install jq if not present
-command -v jq || sudo apt install -y jq
+command -v jq &>/dev/null || sudo $APT install -y jq
 
 sleep 5
 
