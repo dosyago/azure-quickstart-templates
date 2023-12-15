@@ -5,6 +5,7 @@ region="${2//[[:space:]]/}"
 resourceId="${3//[[:space:]]/}"
 connectionString="${4//[[:space:]]/}"
 appId="${5//[[:space:]]/}"
+workspaceId="${6//[[:space:]]/}"
 
 # Outer heredoc starts here
 sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" "$appId" <<'EOF'
@@ -16,12 +17,14 @@ region="$1"
 resourceId="$2"
 connectionString="$3"
 appId="$4"
+workspaceId="$5"
 
 # Logging
 echo "Region: [$region]"
 echo "ResourceID: [$resourceId]"
 echo "ConnectionString: [$connectionString]"
 echo "AppInsights App ID: [$appId]"
+echo "Log Analytics Workspace ID: [$workspaceId]"
 
 export DEBIAN_FRONTEND=noninteractive
 export NEEDRESTART_SUSPEND=1
@@ -52,12 +55,13 @@ npm i --save applicationinsights @azure/identity @azure/monitor-query bluebird
 # Export the connection string to an environment variable
 export APPINSIGHTS_CONNECTION_STRING="$connectionString"
 export APPINSIGHTS_APP_ID="$appId"
+export WORKSPACE_ID="$workspaceId"
 
 # Create a Node.js script using a heredoc
 cat << 'INNER_EOF' > app.js
 const appInsights = require('applicationinsights');
 const { DefaultAzureCredential } = require('@azure/identity');
-const { MetricsQueryClient } = require('@azure/monitor-query');
+const { LogsQueryClient } = require('@azure/monitor-query');
 const { delay } = require('bluebird');
 
 appInsights.setup(process.env.APPINSIGHTS_CONNECTION_STRING).setSendLiveMetrics(true).start();
@@ -80,7 +84,7 @@ console.log('Custom event sent to Application Insights');
 // Function to check metric availability
 async function checkMetricAvailability() {
   const credential = new DefaultAzureCredential();
-  const monitorQueryClient = new MetricsQueryClient(credential);
+  const monitorQueryClient = new LogsQueryClient(credential);
   const appId = process.env.APPINSIGHTS_APP_ID; // Set this environment variable to your Application Insights App ID
   const MAX_TRIES = 150; // around about 12 and a half minutes
   let tries = 0;
@@ -89,8 +93,8 @@ async function checkMetricAvailability() {
   while (true) {
     tries++;
     try {
-      const kqlQuery = `customMetrics | where name == 'LoginLink'`;
-      const response = await monitorQueryClient.queryWorkspace(appId, kqlQuery, { timespan: "P1D" });
+      const kqlQuery = `traces | where customDimensions.url == '${loginLinkUrl}' and message == 'LoginLink'`;
+      const response = await monitorQueryClient.queryWorkspace(workspaceId, kqlQuery, { timespan: "P1D" });
       if (response.tables[0].rows.length > 0) {
         console.log('Metric is available.');
         break;
