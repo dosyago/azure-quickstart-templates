@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "9.9.9.9",
+  "contentVersion": "22.222.2222.22222",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -414,7 +414,7 @@
         "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
       ],
       "properties": {
-        "description": "[concat('Your BrowserBox is ready! Click your Login Link: https://', variables('realHostname'), ':8080/login?token=', variables('realToken'), '. For commercial closed-source use please purchase a license: https://dosyago.com and for support, sales and customizations please reach out anytime: sales@dosyago.com -- Thank you for choosing BrowserBox!)]",
+        "description": "[concat('Your BrowserBox is ready! Click your Login Link: https://', variables('realHostname'), ':8080/login?token=', variables('realToken'), '. For commercial closed-source use please purchase a license: https://dosyago.com and for support, sales and customizations please reach out anytime: sales@dosyago.com -- Thank you for choosing BrowserBox!')]",
         "severity": 3,
         "enabled": true,
         "evaluationFrequency": "PT1M",
