@@ -187,7 +187,7 @@
     {
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
-      "name": "[concat('appInsights-', variables('vmName'))]",
+      "name": "[concat('BrowserBoxNotifications-', variables('vmName'))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', concat('yourLogAnalyticsWorkspace-', variables('vmName')))]"
@@ -407,20 +407,20 @@
     {
       "type": "Microsoft.Insights/metricAlerts",
       "apiVersion": "2018-03-01",
-      "name": "[concat('yourAlertRule',variables('uniqueSuffix'))]",
+      "name": "[concat('YourBrowserBox-',variables('uniqueSuffix'))]",
       "location": "global",
       "dependsOn": [
-        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]",
+        "[resourceId('Microsoft.Insights/components', concat('BrowserBoxNotifications-', variables('vmName')))]",
         "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
       ],
       "properties": {
-        "description": "[concat('Your LoginLink: https://', variables('realHostname'), ':8080/login?token=', variables('realToken'))]",
+        "description": "[concat('Your BrowserBox is ready! Click your Login Link: https://', variables('realHostname'), ':8080/login?token=', variables('realToken'), '. For commercial closed-source use please purchase a license: https://dosyago.com and for support, sales and customizations please reach out anytime: sales@dosyago.com -- Thank you for choosing BrowserBox!)]",
         "severity": 3,
         "enabled": true,
         "evaluationFrequency": "PT1M",
         "windowSize": "PT1M",
         "scopes": [
-          "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]"
+          "[resourceId('Microsoft.Insights/components', concat('BrowserBoxNotifications-', variables('vmName')))]"
         ],
         "criteria": {
           "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
@@ -451,7 +451,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]",
+        "[resourceId('Microsoft.Insights/components', concat('BrowserBoxNotifications-', variables('vmName')))]",
         "[resourceId('Microsoft.Authorization/roleAssignments', variables('roleReader'))]",
         "[resourceId('Microsoft.Authorization/roleAssignments', variables('rolePublisher'))]"
       ],
@@ -464,7 +464,7 @@
           "fileUris": ["[uri(parameters('_artifactsLocation'), concat('installBrowserBox_then_notify.sh', parameters('_artifactsLocationSasToken')))]"]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('bash installBrowserBox_then_notify.sh \"', parameters('adminUsername'), '\" \"', parameters('location'), '\" \"', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), '\" \"', reference(resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '2020-02-02', 'Full').properties.connectionString, '\" \"', concat('appInsights-', variables('vmName')), '\" \"', resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '\" \"', parameters('userEmail'), '\" \"', variables('realHostname'), '\" \"', variables('realToken'), '\" \"', parameters('installDocViewer'), '\" \"', parameters('understanding'), '\"')]"
+          "commandToExecute": "[concat('bash installBrowserBox_then_notify.sh \"', parameters('adminUsername'), '\" \"', parameters('location'), '\" \"', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), '\" \"', reference(resourceId('Microsoft.Insights/components', concat('BrowserBoxNotifications-', variables('vmName'))), '2020-02-02', 'Full').properties.connectionString, '\" \"', concat('BrowserBoxNotifications-', variables('vmName')), '\" \"', resourceId('Microsoft.Insights/components', concat('BrowserBoxNotifications-', variables('vmName'))), '\" \"', parameters('userEmail'), '\" \"', variables('realHostname'), '\" \"', variables('realToken'), '\" \"', parameters('installDocViewer'), '\" \"', parameters('understanding'), '\"')]"
         }
       }
     }
