@@ -77,11 +77,11 @@ case $distro in
 esac
 
 # Create a new user and add to sudoers
-username="pro"
+export username="pro"
 if ! id "$username" &>/dev/null; then
   add_user "$username"
-  echo "$username ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$username
-  chmod 0440 /etc/sudoers.d/$username
+  echo "$username ALL=(ALL) NOPASSWD:ALL" >> "/etc/sudoers.d/${username}"
+  chmod 0440 "/etc/sudoers.d/${username}"
 fi
 
 # Switch to the new user and run the scripts
@@ -246,6 +246,9 @@ BBEOF
 
 # End of the outer heredoc. Exit with the exit status of the heredoc bash script
 export -f run_heredoc_script
-nohup bash -c 'run_heredoc_script' &>"/home/${username}/bbinstall.log" &
+if ! test -d "/home/${adminUsername}"; then
+  mkdir -p "/home/${adminUsername}"
+fi
+nohup bash -c 'run_heredoc_script' &>"/home/${adminUsername}/bbinstall.log" &
 
 exit 0
