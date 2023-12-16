@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "7.1.1.3",
+  "contentVersion": "8.1.1.1",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -404,10 +404,10 @@
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('notifier.sh', parameters('_artifactsLocationSasToken')))]"]
+          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('installBrowserBox_then_notify.sh', parameters('_artifactsLocationSasToken')))]"]
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('bash notifier.sh \"', parameters('adminUsername'), '\" \"', parameters('location'), '\" \"', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), '\" \"', reference(resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '2020-02-02', 'Full').properties.connectionString, '\" \"', concat('appInsights-', variables('vmName')), '\" \"', resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '\"')]"
+          "commandToExecute": "[concat('bash notifier.sh \"', parameters('adminUsername'), '\" \"', parameters('location'), '\" \"', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), '\" \"', reference(resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '2020-02-02', 'Full').properties.connectionString, '\" \"', concat('appInsights-', variables('vmName')), '\" \"', resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '\" \"', parameters('userEmail'), '\" \"', variables('realHostname'), '\" \"', parameters('realToken'), '\" \"', parameters('installDocViewer'), '\" \"', parameters('understanding'), '\"')]"
         }
       }
     },
