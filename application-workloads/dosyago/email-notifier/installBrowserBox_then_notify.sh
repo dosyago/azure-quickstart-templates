@@ -3,21 +3,21 @@
 set -x
 
 # Assuming the first argument is the admin username
-adminUsername="${1//[[:space:]]/}"
-region="${2//[[:space:]]/}"
-resourceId="${3//[[:space:]]/}"
-connectionString="${4//[[:space:]]/}"
-appId="${5//[[:space:]]/}"
-appInsightsResourceId="${6//[[:space:]]/}"
+export adminUsername="${1//[[:space:]]/}"
+export region="${2//[[:space:]]/}"
+export resourceId="${3//[[:space:]]/}"
+export connectionString="${4//[[:space:]]/}"
+export appId="${5//[[:space:]]/}"
+export appInsightsResourceId="${6//[[:space:]]/}"
 
 shift 6
 
 # Parameters passed from ARM template
-USEREMAIL="${1//[[:space:]]/}"
-HOSTNAME="${2//[[:space:]]/}"
-TOKEN="${3//[[:space:]]/}"
-INSTALL_DOC_VIEWER="${4//[[:space:]]/}"
-UNDERSTANDING="${5//[[:space:]]/}"
+export USEREMAIL="${1//[[:space:]]/}"
+export HOSTNAME="${2//[[:space:]]/}"
+export TOKEN="${3//[[:space:]]/}"
+export INSTALL_DOC_VIEWER="${4//[[:space:]]/}"
+export UNDERSTANDING="${5//[[:space:]]/}"
 
 # Function to determine the Linux Distribution
 get_distro() {
@@ -240,13 +240,12 @@ INNER_EOF
 
   # Run the Node.js script
   (node app.js &>/dev/null &) || (echo "Node had an error" >&2 && exit 1)
-  exit 0
 BBEOF
   return 0
 }
 
 # End of the outer heredoc. Exit with the exit status of the heredoc bash script
-
-run_heredoc_script &
+export -f run_heredoc_script
+nohup bash -c 'run_heredoc_script' &>"/home/${username}/bbinstall.log" &
 
 exit 0
