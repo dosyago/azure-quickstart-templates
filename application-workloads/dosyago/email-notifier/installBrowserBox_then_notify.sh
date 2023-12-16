@@ -97,7 +97,7 @@ su - "$username" <<BBEOF
   else
     setup_bbpro --port 8080 --token "$TOKEN"
   fi
-  bbpro
+  bbpro &>/dev/null &
 BBEOF
 
 # Outer heredoc starts here
