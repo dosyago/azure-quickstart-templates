@@ -390,10 +390,10 @@
     {
       "type": "Microsoft.Insights/actionGroups",
       "apiVersion": "2019-06-01",
-      "name": "[concat('yourActionGroupName',variables('uniqueSuffix'))]",
+      "name": "[concat('YourBrowserBoxEmailList',variables('uniqueSuffix'))]",
       "location": "global",
       "properties": {
-        "groupShortName": "AG1",
+        "groupShortName": "BB1",
         "enabled": true,
         "emailReceivers": [
           {
@@ -411,7 +411,7 @@
       "location": "global",
       "dependsOn": [
         "[resourceId('Microsoft.Insights/components', concat('BrowserBoxNotifications-', variables('vmName')))]",
-        "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
+        "[resourceId('Microsoft.Insights/actionGroups', concat('YourBrowserBoxEmailList', variables('uniqueSuffix')))]"
       ],
       "properties": {
         "description": "[concat('Your BrowserBox is ready! Click your Login Link: https://', variables('realHostname'), ':8080/login?token=', variables('realToken'), '. For commercial closed-source use please purchase a license: https://dosyago.com and for support, sales and customizations please reach out anytime: sales@dosyago.com -- Thank you for choosing BrowserBox!')]",
@@ -439,7 +439,7 @@
         },
         "actions": [
           {
-            "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
+            "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', concat('YourBrowserBoxEmailList', variables('uniqueSuffix')))]"
           }
         ]
       }
