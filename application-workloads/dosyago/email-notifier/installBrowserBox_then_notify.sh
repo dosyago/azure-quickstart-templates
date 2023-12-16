@@ -126,9 +126,12 @@ command -v jq &>/dev/null || sudo $APT install -y jq
 sleep 5
 
 # Install Node.js using nvm
+export HOME="/home/${username}"
+export USER="${username}"
 cd $HOME
 touch $HOME/.bashrc
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source $HOME/.nvm/nvm.sh
+command -v nvm || (curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash)
 source $HOME/.nvm/nvm.sh
 nvm install v20 # we need v20 for the azure libraries
 
