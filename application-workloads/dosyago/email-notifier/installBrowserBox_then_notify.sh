@@ -13,8 +13,8 @@ shift 6
 
 # Parameters passed from ARM template
 USEREMAIL="${1//[[:space:]]/}"
-HOSTNAME=${2//[[:space:]]/}"
-TOKEN=${3//[[:space:]]/}"
+HOSTNAME="${2//[[:space:]]/}"
+TOKEN="${3//[[:space:]]/}"
 INSTALL_DOC_VIEWER="${4//[[:space:]]/}"
 UNDERSTANDING="${5//[[:space:]]/}"
 
