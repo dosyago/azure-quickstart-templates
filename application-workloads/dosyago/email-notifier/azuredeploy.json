@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "33.33.33.35",
+  "contentVersion": "33.33.33.39",
   "parameters": {
     "utcValue": {
       "type": "string",
