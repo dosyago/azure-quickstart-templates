@@ -2,7 +2,8 @@
 #set -xeo pipefail
 set -x
 
-adminUsername=$1  # Assuming the first argument is the admin username
+# Assuming the first argument is the admin username
+adminUsername="${1//[[:space:]]/}"
 region="${2//[[:space:]]/}"
 resourceId="${3//[[:space:]]/}"
 connectionString="${4//[[:space:]]/}"
