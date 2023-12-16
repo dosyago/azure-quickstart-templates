@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "8.8.9.9",
+  "contentVersion": "8.8.11.11",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -410,6 +410,7 @@
       "name": "[concat('yourAlertRule',variables('uniqueSuffix'))]",
       "location": "global",
       "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]",
         "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
       ],
       "properties": {
