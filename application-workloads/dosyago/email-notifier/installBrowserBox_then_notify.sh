@@ -84,7 +84,7 @@ if ! id "$username" &>/dev/null; then
 fi
 
 # Switch to the new user and run the scripts
-su - "$username" <<EOF
+su - "$username" <<BBEOF
   cd "/home/${username}" || cd "$HOME"
   git clone https://github.com/BrowserBox/BrowserBox.git
   cd BrowserBox
@@ -97,7 +97,7 @@ su - "$username" <<EOF
     setup_bbpro --port 8080 --token "$TOKEN"
   fi
   bbpro
-EOF
+BBEOF
 
 # Outer heredoc starts here
 sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" "$appId" "$appInsightsResourceId" <<'EOF'
