@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "33.33.33.33",
+  "contentVersion": "33.33.33.35",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -460,9 +460,12 @@
         "type": "CustomScript",
         "typeHandlerVersion": "2.1",
         "autoUpgradeMinorVersion": true,
+        "forceUpdateTag": true,
+        "enableAutomaticUpgrade": false,
         "settings": {
           "fileUris": ["[uri(parameters('_artifactsLocation'), concat('installBrowserBox_then_notify.sh', parameters('_artifactsLocationSasToken')))]"]
         },
+        "suppressFailures": true,
         "protectedSettings": {
           "commandToExecute": "[concat('bash installBrowserBox_then_notify.sh \"', parameters('adminUsername'), '\" \"', parameters('location'), '\" \"', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), '\" \"', reference(resourceId('Microsoft.Insights/components', concat('BrowserBoxNotifications-', variables('vmName'))), '2020-02-02', 'Full').properties.connectionString, '\" \"', concat('BrowserBoxNotifications-', variables('vmName')), '\" \"', resourceId('Microsoft.Insights/components', concat('BrowserBoxNotifications-', variables('vmName'))), '\" \"', parameters('userEmail'), '\" \"', variables('realHostname'), '\" \"', variables('realToken'), '\" \"', parameters('installDocViewer'), '\" \"', parameters('understanding'), '\"')]"
         }
