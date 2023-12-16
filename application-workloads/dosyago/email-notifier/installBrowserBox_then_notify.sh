@@ -86,7 +86,7 @@ fi
 
 # Switch to the new user and run the scripts
 su - "$username" <<BBEOF
-  cd "/home/${username}" || cd "$HOME"
+  cd "/home/${username}" || cd "\$HOME"
   git clone https://github.com/BrowserBox/BrowserBox.git
   cd BrowserBox
   ./deploy-scripts/wait_for_hostname.sh "$HOSTNAME"
@@ -128,11 +128,11 @@ sleep 5
 # Install Node.js using nvm
 export HOME="/home/${username}"
 export USER="${username}"
-cd $HOME
-touch $HOME/.bashrc
-source $HOME/.nvm/nvm.sh
+cd \$HOME
+touch \$HOME/.bashrc
+source \$HOME/.nvm/nvm.sh
 command -v nvm || (curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash)
-source $HOME/.nvm/nvm.sh
+source \$HOME/.nvm/nvm.sh
 nvm install v20 # we need v20 for the azure libraries
 
 # Create and navigate to the application directory
@@ -224,7 +224,7 @@ async function checkMetricAvailability() {
             properties: { url: loginLinkUrl }  // Additional data
           });
         } else if ( tries > MAX_TRIES ) {
-          console.error(`Exceeded \${MAX_TRIES} checks and no metric. Quitting...`);
+          console.error(\`Exceeded \${MAX_TRIES} checks and no metric. Quitting...\`);
           code = 1;
           break;
         }
