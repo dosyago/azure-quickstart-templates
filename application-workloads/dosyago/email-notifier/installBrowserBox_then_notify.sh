@@ -98,10 +98,7 @@ su - "$username" <<BBEOF
     setup_bbpro --port 8080 --token "$TOKEN"
   fi
   bbpro &>/dev/null &
-BBEOF
 
-# Outer heredoc starts here
-sudo -u "$adminUsername" bash -s "$region" "$resourceId" "$connectionString" "$appId" "$appInsightsResourceId" <<'EOF'
 # Inner script starts after this line
 APT=$(command -v apt-get || command -v apt || command -v dnf || command -v yum || command -v brew)
 
@@ -249,7 +246,7 @@ INNER_EOF
 exit 0
 
 # End of the inner script
-EOF
+BBEOF
 # End of the outer heredoc. Exit with the exit status of the heredoc bash script
 
 exit $?
