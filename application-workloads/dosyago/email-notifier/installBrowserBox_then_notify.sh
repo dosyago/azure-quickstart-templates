@@ -221,7 +221,7 @@ async function checkMetricAvailability() {
             properties: { url: loginLinkUrl }  // Additional data
           });
         } else if ( tries > MAX_TRIES ) {
-          console.error(`Exceeded ${MAX_TRIES} checks and no metric. Quitting...`);
+          console.error(`Exceeded \${MAX_TRIES} checks and no metric. Quitting...`);
           code = 1;
           break;
         }
