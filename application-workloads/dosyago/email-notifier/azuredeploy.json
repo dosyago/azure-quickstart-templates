@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "8.8.8.11",
+  "contentVersion": "8.8.9.9",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -388,37 +388,10 @@
       }
     },
     {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[variables('scriptName')]",
-      "apiVersion": "2023-03-01",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
-        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]",
-        "[resourceId('Microsoft.Authorization/roleAssignments', variables('roleReader'))]",
-        "[resourceId('Microsoft.Authorization/roleAssignments', variables('rolePublisher'))]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Azure.Extensions",
-        "type": "CustomScript",
-        "typeHandlerVersion": "2.1",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('installBrowserBox_then_notify.sh', parameters('_artifactsLocationSasToken')))]"]
-        },
-        "protectedSettings": {
-          "commandToExecute": "[concat('bash installBrowserBox_then_notify.sh \"', parameters('adminUsername'), '\" \"', parameters('location'), '\" \"', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), '\" \"', reference(resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '2020-02-02', 'Full').properties.connectionString, '\" \"', concat('appInsights-', variables('vmName')), '\" \"', resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '\" \"', parameters('userEmail'), '\" \"', variables('realHostname'), '\" \"', variables('realToken'), '\" \"', parameters('installDocViewer'), '\" \"', parameters('understanding'), '\"')]"
-        }
-      }
-    },
-    {
       "type": "Microsoft.Insights/actionGroups",
       "apiVersion": "2019-06-01",
       "name": "[concat('yourActionGroupName',variables('uniqueSuffix'))]",
       "location": "global",
-      "dependsOn": [
-        "[variables('scriptRef')]"
-      ],
       "properties": {
         "groupShortName": "AG1",
         "enabled": true,
@@ -468,6 +441,30 @@
             "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', concat('yourActionGroupName', variables('uniqueSuffix')))]"
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[variables('scriptName')]",
+      "apiVersion": "2023-03-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
+        "[resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName')))]",
+        "[resourceId('Microsoft.Authorization/roleAssignments', variables('roleReader'))]",
+        "[resourceId('Microsoft.Authorization/roleAssignments', variables('rolePublisher'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.1",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": ["[uri(parameters('_artifactsLocation'), concat('installBrowserBox_then_notify.sh', parameters('_artifactsLocationSasToken')))]"]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('bash installBrowserBox_then_notify.sh \"', parameters('adminUsername'), '\" \"', parameters('location'), '\" \"', resourceId('Microsoft.Compute/virtualMachines', variables('vmName')), '\" \"', reference(resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '2020-02-02', 'Full').properties.connectionString, '\" \"', concat('appInsights-', variables('vmName')), '\" \"', resourceId('Microsoft.Insights/components', concat('appInsights-', variables('vmName'))), '\" \"', parameters('userEmail'), '\" \"', variables('realHostname'), '\" \"', variables('realToken'), '\" \"', parameters('installDocViewer'), '\" \"', parameters('understanding'), '\"')]"
+        }
       }
     }
   ],
