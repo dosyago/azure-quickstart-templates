@@ -6,7 +6,7 @@
 		"config": {
 			"isWizard": true,
       "basics": {
-        "description": "<h1 style='padding:0;display: flex; align-items: center; border: thin solid;'><img style width=80 height=80 src=https://raw.githubusercontent.com/BrowserBox/BrowserBox/boss/docs/icon.svg alt='BrowserBox Logo 2023'>Deploy BrowserBox on Azure</h1>\n\nCreate a [BrowserBox](https://github.com/BrowserBox/BrowserBox) Remote Browser in 3 simple steps. You'll get an email with your BrowserBox Login Link when your deployment is ready. By providing your email address you agree to [our terms](https://dosyago.com/terms.txt), [privacy policy](https://dosyago.com/privacy.txt) and LetsEncrypt's terms.\n\n**Next Steps Guide**\n\n1. Pick or create a <code>Resource group</code> for this deployment and pick an [*Azure Region*](https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/) close to you - ***ping is important!***\n2. Optionally adjust the <code>Operating System</code> and <code>Machine Size</code>. You can also change any *Advanced Settings* in the next step.\n3. In the final step, fill out <code>Your Email</code> and click *Create* to launch your BrowserBox system.\n\nWhen you complete these steps Azure will launch your resources and email your BrowserBox Login Link in approximately 10 to 15 minutes.",
+        "description": "<h1 style='color:dodgerblue;padding:0;display: flex; align-items: center; border: thin solid;'><img style width=80 height=80 src=https://raw.githubusercontent.com/BrowserBox/BrowserBox/boss/docs/icon.svg alt='BrowserBox Logo 2023'>Deploy BrowserBox on Azure</h1>\n\nQuickly set up a [BrowserBox](https://github.com/BrowserBox/BrowserBox) Remote Browser in just 3 steps. After setup, you'll receive an email with your BrowserBox Login Link. By providing your email, you accept [our terms](https://dosyago.com/terms.txt), [privacy policy](https://dosyago.com/privacy.txt), and LetsEncrypt's terms.\n\n**Next Steps Guide**\n\n1. Select or create a <code>Resource group</code> in an [*Azure Region*](https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/) near you - ***low ping matters!***\n2. Optionally modify the <code>Operating System</code> and <code>Machine Size</code>, and explore *Advanced Settings*.\n3. Finally, enter <code>Your Email</code> and click *Create* to initiate your BrowserBox system.\n\nAzure will set up your resources and send the BrowserBox Login Link within 10-15 minutes.",
         "subscription": {
           "constraints": {
             "validations": [
@@ -104,10 +104,9 @@
       {
         "name": "imageChoice",
         "type": "Microsoft.Common.DropDown",
-        "label": "Linux Operating System",
-        "subLabel": "Hello",
+        "label": "Operating System",
         "defaultValue": "Ubuntu 22.04 LTS (gen 2)",
-        "toolTip": "Choose an OS. It's okay if you don't know what these are, the default is a fine choice.",
+        "toolTip": "Choose a Linux OS. It's okay if you don't know what these are, the default is a fine choice.",
         "constraints": {
           "required": false,
           "allowedValues": [
