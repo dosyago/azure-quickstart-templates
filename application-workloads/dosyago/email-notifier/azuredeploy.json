@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "99.1.2.8",
+  "contentVersion": "99.1.2.9",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -90,7 +90,7 @@
     },
     "authenticationType": {
       "type": "string",
-      "defaultValue": "sshPublicKey",
+      "defaultValue": "password",
       "allowedValues": [
         "sshPublicKey",
         "password"
