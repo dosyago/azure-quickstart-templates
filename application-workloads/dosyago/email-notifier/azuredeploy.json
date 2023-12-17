@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "99.1.2.13",
+  "contentVersion": "99.1.2.14",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -32,7 +32,7 @@
       "metadata": {
         "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
       },
-      "defaultValue": "[uniqueString(newGuid())]"
+      "defaultValue": "[concat('Bb1',uniqueString(newGuid()), '!')]"
     },
     "dnsNameForPublicIP": {
       "type": "string",
@@ -64,7 +64,7 @@
     },
     "token": {
       "type": "string",
-      "defaultValue": "abc123",
+      "defaultValue": "",
       "metadata": {
         "description": "A secret for the login link."
       }
@@ -130,7 +130,7 @@
     },
     "randomPassword": {
       "type": "string",
-      "defaultValue": "[uniqueString(newGuid())]",
+      "defaultValue": "[concat('Bb1',uniqueString(newGuid()), '!')]",
       "metadata": {
         "description": "A random GUID value hashed to construct the token if token is not provided."
       }

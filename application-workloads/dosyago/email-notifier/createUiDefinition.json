@@ -389,7 +389,7 @@
                 },
                 "defaultValue": {
                   "sshPublicKey": null,
-                  "password": "[uniqueString(newGuid())]",
+                  "password": "[concat('Bb1', uniqueString(newGuid()), '!')]",
                   "sshKeyName": "bb-ssh",
                   "generateNewSshKey": true,
                   "authenticationType": "password"
