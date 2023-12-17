@@ -388,7 +388,7 @@
                   "sshPublicKey": "SSH Key for the Virtual Machine."
                 },
                 "defaultValue": {
-                  "sshPublicKey": "",
+                  "sshPublicKey": null,
                   "password": "[uniqueString(newGuid())]",
                   "sshKeyName": "bb-ssh",
                   "generateNewSshKey": true,
@@ -514,7 +514,7 @@
       "_artifactsLocation": "[basics('_artifactsLocation')]",
       "_artifactsLocationSasToken": "[basics('_artifactsLocationSasToken')]",
       "adminUsername": "[basics('adminUsername')]",
-      "adminPasswordOrKey": "[coalesce(steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.sshPublicKey, steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.password, basics('randomPassword'))]",
+      "adminPasswordOrKey": "[if(equals(steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.authenticationType, 'password'), steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.password, steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.sshPublicKey)]",
       "authenticationType": "[steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.authenticationType]",
       "dnsNameForPublicIP": "[basics('dnsNameForPublicIP')]",
       "location": "[basics('location')]",

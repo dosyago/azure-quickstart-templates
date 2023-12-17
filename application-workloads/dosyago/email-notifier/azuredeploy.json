@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "99.1.2.12",
+  "contentVersion": "99.1.2.13",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -340,7 +340,6 @@
         "osProfile": {
           "computerName": "[variables('vmName')]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
@@ -390,7 +389,7 @@
         "osProfile": {
           "computerName": "[variables('vmName')]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "adminPassword": "[if(equals(parameters('adminPasswordOrKey'), ''), parameters('randomPassword'), parameters('adminPasswordOrKey'))]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": false
           }
