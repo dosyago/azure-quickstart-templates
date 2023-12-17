@@ -106,7 +106,7 @@
         "type": "Microsoft.Common.DropDown",
         "label": "Operating System",
         "defaultValue": "Ubuntu 22.04 LTS (gen 2)",
-        "toolTip": "Choose a Linux OS. It's okay if you don't know what these are, the default is a fine choice.",
+        "toolTip": "Optionally choose a Linux OS. It's okay to be unsure. The default is a fine choice.",
         "constraints": {
           "required": false,
           "allowedValues": [
@@ -132,7 +132,7 @@
         "name": "virtualMachineSize",
 				"type": "Microsoft.Compute.SizeSelector",
 				"label": "Machine Size",
-				"toolTip": "Bigger is better but no need to go crazy. Remember you are responsible for any charges you incur as a result of using this template.",
+				"toolTip": "Optionally pick a machine size. Bigger is better but no need to go crazy. Remember you are responsible for any charges you incur as a result of using this template.",
 				"defaultValue": "Standard_D2s",
 				"recommendedSizes": [
 					"Standard_D2s_v3"
@@ -348,7 +348,7 @@
           {
             "name": "show",
             "type": "Microsoft.Common.CheckBox",
-            "label": "Use advanced settings?",
+            "label": "Use Advanced Settings?",
             "constraints": {
               "required": false
             }
