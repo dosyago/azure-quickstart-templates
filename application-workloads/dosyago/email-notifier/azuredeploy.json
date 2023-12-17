@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "99.1.2.9",
+  "contentVersion": "99.1.2.11",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -335,7 +335,7 @@
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrKey')]",
           "linuxConfiguration": {
-            "disablePasswordAuthentication": "[equals(parameters('authenticationType'), 'sshPublicKey')]",
+            "disablePasswordAuthentication": true,
             "ssh": {
               "publicKeys": [
                 {
@@ -385,15 +385,7 @@
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrKey')]",
           "linuxConfiguration": {
-            "disablePasswordAuthentication": "[equals(parameters('authenticationType'), 'sshPublicKey')]",
-            "ssh": {
-              "publicKeys": [
-                {
-                  "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-                  "keyData": "[parameters('adminPasswordOrKey')]"
-                }
-              ]
-            }
+            "disablePasswordAuthentication": false
           }
         },
         "storageProfile": {
