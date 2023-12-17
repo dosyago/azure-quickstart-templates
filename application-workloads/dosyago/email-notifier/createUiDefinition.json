@@ -264,10 +264,26 @@
         "type": "Microsoft.Common.TextBox",
         "label": "Token",
         "subLabel": "",
-        "defaultValue": "abc123",
+        "defaultValue": "",
         "toolTip": "A secret for the login link.",
         "constraints": {
           "required": false,
+          "regex": "",
+          "validationMessage": "",
+          "validations": []
+        },
+        "infoMessages": [],
+        "visible": false
+      },
+      {
+        "name": "randomPassword",
+        "type": "Microsoft.Common.TextBox",
+        "label": "Random Password",
+        "subLabel": "",
+        "defaultValue": "[uniqueString(newGuid())]",
+        "toolTip": "A random GUID value hashed to construct the token if token is not provided.",
+        "constraints": {
+          "required": true,
           "regex": "",
           "validationMessage": "",
           "validations": []
@@ -498,7 +514,7 @@
       "_artifactsLocation": "[basics('_artifactsLocation')]",
       "_artifactsLocationSasToken": "[basics('_artifactsLocationSasToken')]",
       "adminUsername": "[basics('adminUsername')]",
-      "adminPasswordOrKey": "[coalesce(steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.sshPublicKey, steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.password)]",
+      "adminPasswordOrKey": "[coalesce(steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.sshPublicKey, steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.password, basics('randomPassword'))]",
       "authenticationType": "[steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.authenticationType]",
       "dnsNameForPublicIP": "[basics('dnsNameForPublicIP')]",
       "location": "[basics('location')]",
@@ -509,6 +525,7 @@
       "virtualMachineSize": "[basics('virtualMachineSize')]",
       "installDocViewer": "[basics('installDocViewer')]",
       "understanding": "[basics('understanding')]",
+      "randomPassword": "[basics('randomPassword')]",
       "randomGUID": "[basics('randomGUID')]"
     }
   }

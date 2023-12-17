@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "99.1.2.11",
+  "contentVersion": "99.1.2.12",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -124,6 +124,13 @@
     "randomGUID": {
       "type": "string",
       "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "A random GUID value hashed to construct the token if token is not provided."
+      }
+    },
+    "randomPassword": {
+      "type": "string",
+      "defaultValue": "[uniqueString(newGuid())]",
       "metadata": {
         "description": "A random GUID value hashed to construct the token if token is not provided."
       }
