@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "99.1.2.5",
+  "contentVersion": "99.1.2.8",
   "parameters": {
     "utcValue": {
       "type": "string",
@@ -31,7 +31,8 @@
       "type": "securestring",
       "metadata": {
         "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
-      }
+      },
+      "defaultValue": "[uniqueString(newGuid())]"
     },
     "dnsNameForPublicIP": {
       "type": "string",
