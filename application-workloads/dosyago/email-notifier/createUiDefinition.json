@@ -328,7 +328,7 @@
         "type": "Microsoft.Common.TextBox",
         "label": "Random GUID",
         "subLabel": "",
-        "defaultValue": "[[newGuid()]",
+        "defaultValue": "[newGuid()]",
         "toolTip": "A random GUID value hashed to construct the token if token is not provided.",
         "constraints": {
           "required": false,
@@ -363,25 +363,26 @@
                 "type": "Microsoft.Compute.CredentialsCombo",
                 "label": {
                   "authenticationType": "Authentication Type",
-                  "password": "Admin Password Or Key",
-                  "sshPublicKey": "Admin Password Or Key"
+                  "password": "Admin Password",
+                  "sshPublicKey": "SSH Public Key Key"
                 },
                 "toolTip": {
                   "authenticationType": "Type of authentication to use on the Virtual Machine. SSH key is recommended.",
-                  "password": "Type of authentication to use on the Virtual Machine. SSH key is recommended.",
-                  "sshPublicKey": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+                  "password": "Enter a password to use on the Virtual Machine.",
+                  "sshPublicKey": "SSH Key for the Virtual Machine."
                 },
                 "defaultValue": {
                   "sshPublicKey": "",
-                  "sshKeyName": "browserbox-ssh",
+                  "password": "[uniqueString(newGuid())]",
+                  "sshKeyName": "bb-ssh",
                   "generateNewSshKey": true,
-                  "authenticationType": "sshPublicKey"
+                  "authenticationType": "password"
                 },
                 "constraints": {
                   "required": false
                 },
                 "options": {
-                  "hideConfirmation": true,
+                  "hideConfirmation": false,
                   "hidePassword": false
                 },
                 "osPlatform": "Linux",
