@@ -1,0 +1,382 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+		"config": {
+			"isWizard": true
+		},
+        "resourceTypes": [
+            "microsoft.resources/resourcegroups",
+			"microsoft.compute/virtualmachines"
+        ],
+        "basics": [
+            {
+                "name": "utcValue",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Utc Value",
+                "subLabel": "",
+                "defaultValue": "[[utcNow()]",
+                "toolTip": "",
+                "constraints": {
+                    "required": false,
+                    "regex": "",
+                    "validationMessage": "",
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": false
+            },
+            {
+                "name": "_artifactsLocation",
+                "type": "Microsoft.Common.TextBox",
+                "label": "_artifacts Location",
+                "subLabel": "",
+                "defaultValue": "[[deployment().properties.templateLink.uri]",
+                "toolTip": "The base URI where artifacts required by this template are located including a trailing '/'",
+                "constraints": {
+                    "required": false,
+                    "regex": "",
+                    "validationMessage": "",
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": false
+            },
+            {
+                "name": "_artifactsLocationSasToken",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                    "password": "_artifacts Location Sas Token",
+                    "confirmPassword": "Confirm password"
+                },
+                "defaultValue": "",
+                "toolTip": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated. Use the defaultValue if the staging location is not secured.",
+                "constraints": {
+                    "required": false,
+                    "regex": "",
+                    "validationMessage": "",
+                    "validations": []
+                },
+                "options": {
+                    "hideConfirmation": true
+                },
+                "visible": false
+            },
+            {
+                "name": "adminUsername",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Admin Username",
+                "subLabel": "",
+                "defaultValue": "cris",
+                "toolTip": "Administrator username for the Virtual Machine.",
+                "constraints": {
+                    "required": false,
+                    "regex": "",
+                    "validationMessage": "",
+                    "validations": [
+                        {
+                            "isValid": "[or(                        or(    empty(basics('adminUsername')),     and(        not(startsWith(basics('adminUsername'), '[[')),         startsWith(basics('adminUsername'), '['), endsWith(basics('adminUsername'), ']'),         greater(indexOf(basics('adminUsername'), '('), -1), greater(indexOf(basics('adminUsername'), ')'), -1)        )    ),                        and(                            not(regex(basics('adminUsername'), '/[\\\\/\\\"\\\"\\[\\]:|<>+=;,$ ?*@]+/')),                             not(endsWith(basics('adminUsername'), '.'))                            ),                        regex(basics('adminUsername'), '^[a-zA-Z0-9-]+$')                        )]",
+                            "message": "User name cannot contain special characters \\/\\\"[]:|<>+=;,?*@ or end with '.', and must be between 1 and 15 characters."
+                        },
+                        {
+                            "isValid": "[or(                        or(    empty(basics('adminUsername')),     and(        not(startsWith(basics('adminUsername'), '[[')),         startsWith(basics('adminUsername'), '['), endsWith(basics('adminUsername'), ']'),         greater(indexOf(basics('adminUsername'), '('), -1), greater(indexOf(basics('adminUsername'), ')'), -1)        )    ),                        equals(                            length(filter(                                parse('[\"administrator\", \"admin\", \"user\", \"user1\", \"test\", \"user2\", \"test1\", \"user3\", \"admin1\", \"1\", \"123\", \"a\", \"actuser\", \"adm\", \"admin2\", \"aspnet\", \"backup\", \"console\", \"david\", \"guest\", \"john\", \"owner\", \"root\", \"server\", \"sql\", \"support\", \"support_388945a0\", \"sys\", \"test2\", \"test3\", \"user4\", \"user5\"]'),                                (item) => equals(toLower(item), toLower(basics('adminUsername')))                            )                        ), 0)                        )]",
+                            "message": "The specified username is not allowed. Please choose a different value."
+                        }
+                    ]
+                },
+                "infoMessages": [],
+                "visible": false
+            },
+            {
+                "name": "dnsNameForPublicIP",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Dns Name For Public IP",
+                "subLabel": "",
+                "defaultValue": "",
+                "toolTip": "The DNS name label for the Public IP. Must be globally unique. Leave blank to be assigned a unique value.",
+                "constraints": {
+                    "required": false,
+                    "regex": "",
+                    "validationMessage": "",
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": false
+            },
+            {
+                "name": "location",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Location",
+                "subLabel": "",
+                "defaultValue": "[[resourceGroup().location]",
+                "toolTip": "Location for all resources.",
+                "constraints": {
+                    "required": false,
+                    "regex": "",
+                    "validationMessage": "",
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": false
+            },
+            {
+                "name": "userEmail",
+                "type": "Microsoft.Common.TextBox",
+                "label": "User Email",
+                "subLabel": "",
+                "toolTip": "The email address of the user.",
+                "constraints": {
+                    "required": true,
+                    "regex": "",
+                    "validationMessage": "",
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": true
+            },
+            {
+                "name": "token",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Token",
+                "subLabel": "",
+                "defaultValue": "abc123",
+                "toolTip": "A secret for the login link.",
+                "constraints": {
+                    "required": false,
+                    "regex": "",
+                    "validationMessage": "",
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": false
+            },
+            {
+                "name": "imageChoice",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Image Choice",
+                "subLabel": "",
+                "defaultValue": "Ubuntu 22.04 LTS (gen 2)",
+                "toolTip": "Choose an OS image",
+                "constraints": {
+                    "required": false,
+                    "allowedValues": [
+                        {
+                            "label": "CentOS 8.5 (gen 2)",
+                            "value": "CentOS 8.5 (gen 2)"
+                        },
+                        {
+                            "label": "Ubuntu 22.04 LTS (gen 2)",
+                            "value": "Ubuntu 22.04 LTS (gen 2)"
+                        },
+                        {
+                            "label": "RedHat 8 LVM (gen 2)",
+                            "value": "RedHat 8 LVM (gen 2)"
+                        }
+                    ],
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": true
+            },
+            {
+                "name": "virtualMachineSize",
+				"type": "Microsoft.Compute.SizeSelector",
+				"label": "Size",
+				"toolTip": "",
+				"defaultValue": "Standard_D2s",
+				"recommendedSizes": [
+					"Standard_D2s_v3"
+				],
+				"osPlatform": "Linux",
+				"constraints": {
+					"allowedSizes": [],
+					"excludedSizes": [],
+					"numAvailabilityZonesRequired": 3,
+					"zone": "3"
+				},
+				"options": {
+					"hideDiskTypeFilter": false
+				},
+				"count": 1,
+				"visible": true
+		    },
+            {
+                "name": "installDocViewer",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Install Doc Viewer",
+                "subLabel": "",
+                "defaultValue": "false",
+                "toolTip": "Install document viewer (makes install take longer).",
+                "constraints": {
+                    "required": false,
+                    "allowedValues": [
+                        {
+                            "label": "true",
+                            "value": "true"
+                        },
+                        {
+                            "label": "false",
+                            "value": "false"
+                        }
+                    ],
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": false
+            },
+            {
+                "name": "understanding",
+                "type": "Microsoft.Common.DropDown",
+                "label": "Understanding",
+                "subLabel": "",
+                "defaultValue": "true",
+                "toolTip": "Acknowledgement of reading the guide and setting up DNS and firewall ports.",
+                "constraints": {
+                    "required": false,
+                    "allowedValues": [
+                        {
+                            "label": "true",
+                            "value": "true"
+                        },
+                        {
+                            "label": "false",
+                            "value": "false"
+                        }
+                    ],
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": false
+            },
+            {
+                "name": "randomGUID",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Random GUID",
+                "subLabel": "",
+                "defaultValue": "[[newGuid()]",
+                "toolTip": "A random GUID value hashed to construct the token if token is not provided.",
+                "constraints": {
+                    "required": false,
+                    "regex": "",
+                    "validationMessage": "",
+                    "validations": []
+                },
+                "infoMessages": [],
+                "visible": false
+            }
+        ],
+        "steps": [
+			 {
+				 "name": "authentication",
+				 "label": "SSH Key (optional)",
+				 "elements": [
+					 {
+						"name": "adminPasswordOrKeyauthenticationType",
+						"type": "Microsoft.Compute.CredentialsCombo",
+						"label": {
+							"authenticationType": "Authentication Type",
+							"password": "Admin Password Or Key",
+							"sshPublicKey": "Admin Password Or Key"
+						},
+						"toolTip": {
+							"authenticationType": "Type of authentication to use on the Virtual Machine. SSH key is recommended.",
+							"password": "Type of authentication to use on the Virtual Machine. SSH key is recommended.",
+							"sshPublicKey": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+						},
+						"defaultValue": {
+							"sshPublicKey": "",
+							"sshKeyName": "browserbox-ssh",
+							"generateNewSshKey": true,
+							"authenticationType": "sshPublicKey"
+						},
+						"constraints": {
+							"required": false
+						},
+						"options": {
+							"hideConfirmation": true,
+							"hidePassword": false
+						},
+						"osPlatform": "Linux",
+						"visible": true
+					 }
+				 ]
+			 },
+			 {
+				 "name": "customHostname",
+				 "label": "Custom Domain (optional)",
+				 "elements": [
+					  {
+						"name": "hostname",
+						"type": "Microsoft.Common.TextBox",
+						"label": "Custom Domain",
+						"subLabel": "",
+						"defaultValue": "",
+						"toolTip": "The fully-qualified custom domain name for your BrowserBox instance. Specify if you will add an A record for this custom domain with your DNS provider pointing to this VM's public IP address. Otherwise, leave blank to get a random cloudapp.azure.com hostname that sets up automatically.",
+						"constraints": {
+							"required": false,
+							"regex": "",
+							"validationMessage": "",
+							"validations": []
+						},
+						"infoMessages": [],
+						"visible": true
+					},
+					 {
+						"name": "publicIpAddressCombo1",
+						"type": "Microsoft.Network.PublicIpAddressCombo",
+						"label": {
+							"publicIpAddress": "Public IP address",
+							"domainNameLabel": "Domain name label"
+						},
+						"toolTip": {
+							"publicIpAddress": "",
+							"domainNameLabel": ""
+						},
+						"defaultValue": {
+							"publicIpAddressName": "ip01",
+							"domainNameLabel": "mydomain"
+						},
+						"constraints": {
+							"required": {
+								"domainNameLabel": true
+							}
+						},
+						"options": {
+							"hideNone": true,
+							"hideDomainNameLabel": false,
+							"hideExisting": false,
+							"zone": 3
+						},
+						"visible": true
+					}
+				 ]
+			 },
+			 {
+				 "name": "test",
+				 "label": "test fields",
+				 "elements": [
+					
+				 ]
+			 }
+		],
+        "outputs": {
+            "utcValue": "[basics('utcValue')]",
+            "_artifactsLocation": "[basics('_artifactsLocation')]",
+            "_artifactsLocationSasToken": "[basics('_artifactsLocationSasToken')]",
+            "adminUsername": "[basics('adminUsername')]",
+            "adminPasswordOrKey": "[coalesce(basics('adminPasswordOrKeyauthenticationType').sshPublicKey, basics('adminPasswordOrKeyauthenticationType').password)]",
+            "authenticationType": "[basics('adminPasswordOrKeyauthenticationType').authenticationType]",
+            "dnsNameForPublicIP": "[basics('dnsNameForPublicIP')]",
+            "location": "[basics('location')]",
+            "userEmail": "[basics('userEmail')]",
+            "hostname": "[basics('hostname')]",
+            "token": "[basics('token')]",
+            "imageChoice": "[basics('imageChoice')]",
+            "virtualMachineSize": "[basics('virtualMachineSize')]",
+            "installDocViewer": "[basics('installDocViewer')]",
+            "understanding": "[basics('understanding')]",
+            "randomGUID": "[basics('randomGUID')]"
+        }
+    }
+}
