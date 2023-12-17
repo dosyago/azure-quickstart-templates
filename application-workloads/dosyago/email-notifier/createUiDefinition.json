@@ -6,7 +6,7 @@
 		"config": {
 			"isWizard": true,
       "basics": {
-        "description": "<h1>BrowserBox Azure Template</h1>\n\nCreate a [BrowserBox](https://github.com/BrowserBox/BrowserBox) virtual machine, enabling secure Remote Browser Isolation.\n<br><img src=https://dosyago.com/favicon.ico>\n\nBy providing your email address you agree to [our terms](https://dosyago.com/terms.txt), [our privacy policy](https://dosyago.com/privacy.txt) and the LetsEncrypt terms. \n\nWe also use your email address to send you your BrowserBox Login Link once your browser is created.\n\n**Steps**:\n\n- Pick your nearest location.\n- Fill out your email\n\n**Optional steps:**\n\n- Change machine size and operating system\n- Set up SSH Access",
+        "description": "<h1 style='padding:0;display: flex; align-items: center; border: thin solid;'><img style width=80 height=80 src=https://raw.githubusercontent.com/BrowserBox/BrowserBox/boss/docs/icon.svg alt='BrowserBox Logo 2023'>Deploy BrowserBox on Azure</h1>\n\nCreate a [BrowserBox](https://github.com/BrowserBox/BrowserBox) Remote Browser in 3 simple steps. You'll get an email with your BrowserBox Login Link when your deployment is ready. By providing your email address you agree to [our terms](https://dosyago.com/terms.txt), [privacy policy](https://dosyago.com/privacy.txt) and LetsEncrypt's terms.\n\n**Next Steps Guide**\n\n1. Pick or create a <code>Resource group</code> for this deployment and pick an [*Azure Region*](https://azure.microsoft.com/en-us/explore/global-infrastructure/geographies/) close to you - ***ping is important!***\n2. Optionally adjust the <code>Operating System</code> and <code>Machine Size</code>. You can also change any *Advanced Settings* in the next step.\n3. In the final step, fill out <code>Your Email</code> and click *Create* to launch your BrowserBox system.\n\nWhen you complete these steps Azure will launch your resources and email your BrowserBox Login Link in approximately 10 to 15 minutes.",
         "subscription": {
           "constraints": {
             "validations": [
@@ -52,7 +52,7 @@
           "allowExisting": false
         },
         "location": {
-          "label": "Pick your nearest location.<br><b>Ping is important!</b>",
+          "label": "Pick your nearest Azure Region.<br><b>Ping is important!</b>",
           "toolTip": "The closer your location is to you, the lower your ping and round-trip time and the better your remote browsing with BrowserBox experience!",
           "constraints": {
             "validations": [
@@ -101,6 +101,56 @@
       "Microsoft.OperationalInsights/workspaces"
     ],
     "basics": [
+      {
+        "name": "imageChoice",
+        "type": "Microsoft.Common.DropDown",
+        "label": "Linux Operating System",
+        "subLabel": "Hello",
+        "defaultValue": "Ubuntu 22.04 LTS (gen 2)",
+        "toolTip": "Choose an OS. It's okay if you don't know what these are, the default is a fine choice.",
+        "constraints": {
+          "required": false,
+          "allowedValues": [
+            {
+              "label": "CentOS 8.5 (gen 2)",
+              "value": "CentOS 8.5 (gen 2)"
+            },
+            {
+              "label": "Ubuntu 22.04 LTS (gen 2)",
+              "value": "Ubuntu 22.04 LTS (gen 2)"
+            },
+            {
+              "label": "RedHat 8 LVM (gen 2)",
+              "value": "RedHat 8 LVM (gen 2)"
+            }
+          ],
+          "validations": []
+        },
+        "infoMessages": [],
+        "visible": true
+      },
+      {
+        "name": "virtualMachineSize",
+				"type": "Microsoft.Compute.SizeSelector",
+				"label": "Machine Size",
+				"toolTip": "Bigger is better but no need to go crazy. Remember you are responsible for any charges you incur as a result of using this template.",
+				"defaultValue": "Standard_D2s",
+				"recommendedSizes": [
+					"Standard_D2s_v3"
+				],
+				"osPlatform": "Linux",
+				"constraints": {
+					"allowedSizes": [],
+					"excludedSizes": [],
+					"numAvailabilityZonesRequired": 3,
+					"zone": "3"
+				},
+				"options": {
+					"hideDiskTypeFilter": false
+				},
+				"count": 1,
+				"visible": true
+		  },
       {
         "name": "utcValue",
         "type": "Microsoft.Common.TextBox",
@@ -227,79 +277,6 @@
         "visible": false
       },
       {
-        "name": "imageChoice",
-        "type": "Microsoft.Common.DropDown",
-        "label": "Image Choice",
-        "subLabel": "",
-        "defaultValue": "Ubuntu 22.04 LTS (gen 2)",
-        "toolTip": "Choose an OS image",
-        "constraints": {
-          "required": false,
-          "allowedValues": [
-            {
-              "label": "CentOS 8.5 (gen 2)",
-              "value": "CentOS 8.5 (gen 2)"
-            },
-            {
-              "label": "Ubuntu 22.04 LTS (gen 2)",
-              "value": "Ubuntu 22.04 LTS (gen 2)"
-            },
-            {
-              "label": "RedHat 8 LVM (gen 2)",
-              "value": "RedHat 8 LVM (gen 2)"
-            }
-          ],
-          "validations": []
-        },
-        "infoMessages": [],
-        "visible": true
-      },
-      {
-        "name": "virtualMachineSize",
-				"type": "Microsoft.Compute.SizeSelector",
-				"label": "Size",
-				"toolTip": "",
-				"defaultValue": "Standard_D2s",
-				"recommendedSizes": [
-					"Standard_D2s_v3"
-				],
-				"osPlatform": "Linux",
-				"constraints": {
-					"allowedSizes": [],
-					"excludedSizes": [],
-					"numAvailabilityZonesRequired": 3,
-					"zone": "3"
-				},
-				"options": {
-					"hideDiskTypeFilter": false
-				},
-				"count": 1,
-				"visible": true
-		  },
-      {
-        "name": "TermsSection",
-        "label": "Agree to terms",
-        "type": "Microsoft.Common.Section",
-        "elements": [
-          {
-            "name": "userEmail",
-            "type": "Microsoft.Common.TextBox",
-            "label": "User Email",
-            "subLabel": "",
-            "toolTip": "The email address of the user.",
-            "constraints": {
-              "required": true,
-              "regex": "",
-              "validationMessage": "",
-              "validations": []
-            },
-            "infoMessages": [],
-            "visible": true
-          }
-        ],
-        "visible": true
-      },
-      {
         "name": "installDocViewer",
         "type": "Microsoft.Common.DropDown",
         "label": "Install Doc Viewer",
@@ -365,110 +342,168 @@
       }
     ],
     "steps": [
-			 {
-				 "name": "authentication",
-				 "label": "SSH Key (optional)",
-				 "elements": [
-					 {
-						"name": "adminPasswordOrKeyauthenticationType",
-						"type": "Microsoft.Compute.CredentialsCombo",
-						"label": {
-							"authenticationType": "Authentication Type",
-							"password": "Admin Password Or Key",
-							"sshPublicKey": "Admin Password Or Key"
-						},
-						"toolTip": {
-							"authenticationType": "Type of authentication to use on the Virtual Machine. SSH key is recommended.",
-							"password": "Type of authentication to use on the Virtual Machine. SSH key is recommended.",
-							"sshPublicKey": "SSH Key or password for the Virtual Machine. SSH key is recommended."
-						},
-						"defaultValue": {
-							"sshPublicKey": "",
-							"sshKeyName": "browserbox-ssh",
-							"generateNewSshKey": true,
-							"authenticationType": "sshPublicKey"
-						},
-						"constraints": {
-							"required": false
-						},
-						"options": {
-							"hideConfirmation": true,
-							"hidePassword": false
-						},
-						"osPlatform": "Linux",
-						"visible": true
-					 }
-				 ]
-			 },
-			 {
-				 "name": "customHostname",
-				 "label": "Custom Domain (optional)",
-				 "elements": [
-					  {
-						"name": "hostname",
-						"type": "Microsoft.Common.TextBox",
-						"label": "Custom Domain",
-						"subLabel": "",
-						"defaultValue": "",
-						"toolTip": "The fully-qualified custom domain name for your BrowserBox instance. Specify if you will add an A record for this custom domain with your DNS provider pointing to this VM's public IP address. Otherwise, leave blank to get a random cloudapp.azure.com hostname that sets up automatically.",
-						"constraints": {
-							"required": false,
-							"regex": "",
-							"validationMessage": "",
-							"validations": []
-						},
-						"infoMessages": [],
-						"visible": true
-					},
-					 {
-						"name": "publicIpAddressCombo1",
-						"type": "Microsoft.Network.PublicIpAddressCombo",
-						"label": {
-							"publicIpAddress": "Public IP address",
-							"domainNameLabel": "Domain name label"
-						},
-						"toolTip": {
-							"publicIpAddress": "",
-							"domainNameLabel": ""
-						},
-						"defaultValue": {
-							"publicIpAddressName": "ip01",
-							"domainNameLabel": "mydomain"
-						},
-						"constraints": {
-							"required": {
-								"domainNameLabel": true
-							}
-						},
-						"options": {
-							"hideNone": true,
-							"hideDomainNameLabel": false,
-							"hideExisting": false,
-							"zone": 3
-						},
-						"visible": true
-					}
-				 ]
-			 },
-			 {
-				 "name": "test",
-				 "label": "test fields",
-				 "elements": [
-					
-				 ]
-			 }
+      {
+        "name": "advanced",
+        "label": "Advanced (optional)",
+        "elements": [
+          {
+            "name": "show",
+            "type": "Microsoft.Common.CheckBox",
+            "label": "Use advanced settings?",
+            "constraints": {
+              "required": false
+            }
+          },
+          {
+            "name": "SSHAccess",
+            "label": "SSH Access",
+            "type": "Microsoft.Common.Section",
+            "elements": [
+              {
+                "name": "adminPasswordOrKeyauthenticationType",
+                "type": "Microsoft.Compute.CredentialsCombo",
+                "label": {
+                  "authenticationType": "Authentication Type",
+                  "password": "Admin Password Or Key",
+                  "sshPublicKey": "Admin Password Or Key"
+                },
+                "toolTip": {
+                  "authenticationType": "Type of authentication to use on the Virtual Machine. SSH key is recommended.",
+                  "password": "Type of authentication to use on the Virtual Machine. SSH key is recommended.",
+                  "sshPublicKey": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+                },
+                "defaultValue": {
+                  "sshPublicKey": "",
+                  "sshKeyName": "browserbox-ssh",
+                  "generateNewSshKey": true,
+                  "authenticationType": "sshPublicKey"
+                },
+                "constraints": {
+                  "required": false
+                },
+                "options": {
+                  "hideConfirmation": true,
+                  "hidePassword": false
+                },
+                "osPlatform": "Linux",
+                "visible": true
+              }
+            ],
+            "visible": "[steps('advanced').show]"
+          },
+          {
+            "name": "CustomDomain",
+            "label": "Custom Domain",
+            "type": "Microsoft.Common.Section",
+            "elements": [
+              {
+                "name": "hostname",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Custom Domain",
+                "subLabel": "",
+                "defaultValue": "",
+                "toolTip": "The fully-qualified custom domain name for your BrowserBox instance. Specify if you will add an A record for this custom domain with your DNS provider pointing to this VM's public IP address. Otherwise, leave blank to get a random cloudapp.azure.com hostname that sets up automatically.",
+                "constraints": {
+                  "required": false,
+                  "regex": "",
+                  "validationMessage": "",
+                  "validations": []
+                },
+                "infoMessages": [],
+                "visible": true
+                },
+                {
+                "name": "publicIpAddressCombo1",
+                "type": "Microsoft.Network.PublicIpAddressCombo",
+                "label": {
+                  "publicIpAddress": "Public IP address",
+                  "domainNameLabel": "Domain name label"
+                },
+                "toolTip": {
+                  "publicIpAddress": "",
+                  "domainNameLabel": ""
+                },
+                "defaultValue": {
+                  "publicIpAddressName": "ip01",
+                  "domainNameLabel": "mydomain"
+                },
+                "constraints": {
+                  "required": {
+                    "domainNameLabel": true
+                  }
+                },
+                "options": {
+                  "hideNone": true,
+                  "hideDomainNameLabel": false,
+                  "hideExisting": false,
+                  "zone": 3
+                },
+                "visible": true
+              }
+            ],
+            "visible": "[steps('advanced').show]"
+          }
+        ]
+	    },
+      {
+        "name": "terms",
+        "label": "Agree to Terms",
+        "elements": [
+          {
+            "name": "legalAgreeNotice",
+            "type": "Microsoft.Common.InfoBox",
+            "visible": true,
+            "options": {
+              "icon": "Info",
+              "text": "Provide your email to agree to our terms and receive your BrowserBox Login Link once your system is ready."
+            }
+          },
+          {
+            "name": "descriptionTextBlock",
+            "type": "Microsoft.Common.TextBlock",
+            "options": {
+              "link": {
+                "label": "Learn more",
+                "uri": "https://github.com/BrowserBox/BrowserBox/blob/boss/legal/self-hosted/"
+              }
+            }
+          },
+          {
+            "name": "legalAgree",
+            "label": "Agree to terms",
+            "type": "Microsoft.Common.Section",
+            "elements": [
+              {
+                "name": "userEmail",
+                "type": "Microsoft.Common.TextBox",
+                "label": "My Email",
+                "toolTip": "Your email address where you will receive your Login Link. By providing this you agree to our terms, privacy policy and LetsEncrypt's terms",
+                "constraints": {
+                  "required": true,
+                  "regex": "",
+                  "validationMessage": "",
+                  "validations": []
+                },
+                "infoMessages": [],
+                "visible": true
+              }
+            ],
+            "visible": true
+          }
+        ]
+      }
 		],
     "outputs": {
       "utcValue": "[basics('utcValue')]",
       "_artifactsLocation": "[basics('_artifactsLocation')]",
       "_artifactsLocationSasToken": "[basics('_artifactsLocationSasToken')]",
       "adminUsername": "[basics('adminUsername')]",
-      "adminPasswordOrKey": "[coalesce(basics('adminPasswordOrKeyauthenticationType').sshPublicKey, basics('adminPasswordOrKeyauthenticationType').password)]",
-      "authenticationType": "[basics('adminPasswordOrKeyauthenticationType').authenticationType]",
+      "adminPasswordOrKey": "[coalesce(steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.sshPublicKey, steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.password)]",
+      "authenticationType": "[steps('advanced').SSHAccess.adminPasswordOrKeyauthenticationType.authenticationType]",
       "dnsNameForPublicIP": "[basics('dnsNameForPublicIP')]",
       "location": "[basics('location')]",
-      "userEmail": "[basics('userEmail')]",
-      "hostname": "[basics('hostname')]",
+      "userEmail": "[steps('terms').legalAgree.userEmail]",
+      "hostname": "[steps('advanced').CustomDomain.hostname]",
       "token": "[basics('token')]",
       "imageChoice": "[basics('imageChoice')]",
       "virtualMachineSize": "[basics('virtualMachineSize')]",
