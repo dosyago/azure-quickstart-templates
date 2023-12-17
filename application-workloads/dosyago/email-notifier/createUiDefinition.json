@@ -379,7 +379,7 @@
                   "authenticationType": "password"
                 },
                 "constraints": {
-                  "required": false
+                  "required": true
                 },
                 "options": {
                   "hideConfirmation": false,
